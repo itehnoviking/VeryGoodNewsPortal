@@ -13,6 +13,6 @@ namespace VeryGoodNewsPortal.Data.Entities
         public DateTime RegistrationDate { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }
-        public virtual ICollection<Role> Roles { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; }
     }
 }
