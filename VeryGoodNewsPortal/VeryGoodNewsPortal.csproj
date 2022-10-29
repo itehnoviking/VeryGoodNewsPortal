@@ -20,7 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\VeryGoodNewsPortal.Core\VeryGoodNewsPortal.Core.csproj" />
+    <ProjectReference Include="..\VeryGoodNewsPortal.DataAccess\VeryGoodNewsPortal.DataAccess.csproj" />
     <ProjectReference Include="..\VeryGoodNewsPortal.Data\VeryGoodNewsPortal.Data.csproj" />
+    <ProjectReference Include="..\VeryGoodNewsPortal.Domain\VeryGoodNewsPortal.Domain.csproj" />
   </ItemGroup>
 
 </Project>
