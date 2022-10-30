@@ -1,0 +1,37 @@
+﻿@model ArticleDetailModel
+@{
+    ViewBag.Title = "Edit";
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <h2>Edit article</h2>
+    <div class="row gx-5">
+        <form asp-controller="Article" asp-action="Edit" asp-antiforgery="true" method="post"> 
+            <div>
+                <input type="hidden" asp-for="Id"/>
+                <div class="mb-3">
+                    <label class="col-sm-2 col-form-label" asp-for="Title"></label>
+                    <input class="form-control" type="text" asp-for="Title">
+                </div>
+                <div class="mb-3">
+                    <label class="col-sm-2 col-form-label" asp-for="Description"></label>
+                    <textarea class="form-control" asp-for="Description"></textarea>
+                </div> 
+                <div class="mb-3">
+                    <label class="col-sm-2 col-form-label" asp-for="Body"></label>
+                    <textarea class="form-control" asp-for="Body"></textarea>
+                </div> 
+                @*<div class="mb-3">
+                    <label class="col-sm-2 col-form-label" asp-for="ArticleType"></label>
+                    <select asp-for="ArticleType" asp-items="Html.GetEnumSelectList<ArticleTypeEnum>()"></select>
+                </div>*@
+                <div class="mb-3">
+                    <label class="col-sm-2 col-form-label" asp-for="CreationDate"></label>
+                    <input type="datetime-local" class="form-control" asp-for="CreationDate">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>

@@ -6,20 +6,29 @@ namespace VeryGoodNewsPortal.Core.Data
 {
     public interface IRepository<T> where T : BaseEntities
     {
-        public Task Add(T obj);
-        public Task AddRange(IEnumerable<T> obj);
-        public Task<T> GetById(Guid id);
-        public Task<T> GetByIdWithIncludes(Guid id, params Expression<Func<T, object>>[] includes);
-        public IQueryable<T> Get();
-        public Task<IQueryable<T>> FindBy(Expression<Func<T, bool>> predicate,
+        //Read
+        Task<T?> GetByIdAsync(Guid id);
+        Task<IEnumerable<T>> GetAllAsync();
+        IQueryable<T> Get();
+        
+        IQueryable<T> FindBy(Expression<Func<T, bool>> searchExpression,
             params Expression<Func<T, object>>[] includes);
 
-        public Task Update(T obj);
+        //Task<T> GetByIdWithIncludes(Guid id, params Expression<Func<T, object>>[] includes);
 
-        public Task PatchAsync(Guid id, List<PatchModel> patchDtos);
 
-        public Task Remove(Guid id);
+        //Create
+        Task AddAsync(T entity);
+        Task AddRangeAsync(IEnumerable<T> entities);
+        
+        
+        //Update
+        void Update(T entity);
+        Task PatchAsync(Guid id, List<PatchModel> patchDtos);
 
-        public Task Dispose();
+        //Delete
+        void Remove(T entity);
+
+        //public Task Dispose();
     }
 }

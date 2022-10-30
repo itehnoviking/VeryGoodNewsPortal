@@ -39,11 +39,11 @@ namespace VeryGoodNewsPortal.DataAccess
             return await _db.SaveChangesAsync();
         }
 
-        public void Dispose()
-        {
-            _db?.Dispose();
-            _articleRepository.Dispose();
-            GC.SuppressFinalize(this);
-        }
+        //public void Dispose()
+        //{
+        //    _db?.Dispose();
+        //    _articleRepository.Dispose();
+        //    GC.SuppressFinalize(this);
+        //}
     }
 }

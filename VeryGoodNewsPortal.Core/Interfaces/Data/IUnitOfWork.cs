@@ -8,7 +8,7 @@ using VeryGoodNewsPortal.Data.Entities;
 
 namespace VeryGoodNewsPortal.Core.Interfaces.Data
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork/* : IDisposable*/
     {
         IRepository<Article> Articles { get; }
         object Roles { get; }
