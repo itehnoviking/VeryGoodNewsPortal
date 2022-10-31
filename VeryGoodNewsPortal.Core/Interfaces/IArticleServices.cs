@@ -13,5 +13,9 @@ namespace VeryGoodNewsPortal.Core.Interfaces
         Task<ArticleDTO> GetArticleAsync(Guid id);
 
         Task UpdateArticle(ArticleDTO model);
+
+        Task DeleteArticle(ArticleDTO model);
+
+        Task CreateArticle(ArticleDTO model);
     }
 }

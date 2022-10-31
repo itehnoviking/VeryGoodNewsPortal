@@ -1,13 +1,13 @@
-﻿@model ArticleDetailViewModel
-@{
-    ViewBag.Title = "Edit";
-    Layout = "_Layout";
+﻿@{
+    ViewData["Title"] = "Delete";
 }
+
+@model ArticleCreateViewModel
 
 <div class="container">
     <h2>Edit article</h2>
     <div class="row gx-5">
-        <form asp-controller="Article" asp-action="Edit" asp-antiforgery="true" method="post"> 
+        <form asp-controller="Article" asp-action="Create" asp-antiforgery="true" method="post"> 
             <div>
                 <input type="hidden" asp-for="Id"/>
                 <div class="mb-3">
@@ -22,10 +22,10 @@
                     <label class="col-sm-2 col-form-label" asp-for="Body"></label>
                     <textarea class="form-control" asp-for="Body"></textarea>
                 </div> 
-                @*<div class="mb-3">
-                    <label class="col-sm-2 col-form-label" asp-for="ArticleType"></label>
-                    <select asp-for="ArticleType" asp-items="Html.GetEnumSelectList<ArticleTypeEnum>()"></select>
-                </div>*@
+                <div class="mb-3">
+                    <label class="col-sm-2 col-form-label" asp-for="SourceId"></label>
+                    <textarea class="form-control" asp-for="SourceId"></textarea>
+                </div>
                 <div class="mb-3">
                     <label class="col-sm-2 col-form-label" asp-for="CreationDate"></label>
                     <input type="datetime-local" class="form-control" asp-for="CreationDate">

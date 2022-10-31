@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Delete";
+}
+
+@model ArticleDeleteViewModel
+
+<div class="container">
+    <p class="lead">
+        Are you sure that you want delete article "@Model.Title" (@Model.CreationDate)
+    </p>
+
+    <form asp-controller="Article" asp-action="Delete" method="post">
+        <input asp-for="Id" type="hidden"/>
+        <a asp-action="Index" asp-controller="Article" class="btn btn-primary">Cancel</a>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+</div>

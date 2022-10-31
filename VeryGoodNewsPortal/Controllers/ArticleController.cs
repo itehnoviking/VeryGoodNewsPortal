@@ -50,7 +50,7 @@ namespace VeryGoodNewsPortal.Controllers
             {
                 var article = await _articleService.GetArticleAsync(id);
 
-                var resultModel = _mapper.Map<ArticleDetailModel>(article);
+                var resultModel = _mapper.Map<ArticleDetailViewModel>(article);
 
                 if (article != null)
                 {
@@ -76,18 +76,51 @@ namespace VeryGoodNewsPortal.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
             var article = await _articleService.GetArticleAsync(id);
-            var resultModel = _mapper.Map<ArticleDetailModel>(article);
+            var viewModel = _mapper.Map<ArticleDetailViewModel>(article);
 
 
-            return View(resultModel);
+            return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(ArticleDetailModel model)
+        public async Task<IActionResult> Edit(ArticleDetailViewModel viewModel)
         {
-            await _articleService.UpdateArticle(_mapper.Map<ArticleDTO>(model));
+            await _articleService.UpdateArticle(_mapper.Map<ArticleDTO>(viewModel));
+            return RedirectToAction("Index", "Article");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var article = await _articleService.GetArticleAsync(id);
+            var viewModel = _mapper.Map<ArticleDeleteViewModel>(article);
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(ArticleDeleteViewModel viewModel)
+        {
+            await _articleService.DeleteArticle(_mapper.Map<ArticleDTO>(viewModel));
 
             return RedirectToAction("Index", "Article");
-        } 
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            var viewModel = new ArticleCreateViewModel();
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(ArticleCreateViewModel viewModel)
+        {
+            await _articleService.CreateArticle(_mapper.Map<ArticleDTO>(viewModel));
+
+            return RedirectToAction("Index", "Article");
+        }
+
     }
 }

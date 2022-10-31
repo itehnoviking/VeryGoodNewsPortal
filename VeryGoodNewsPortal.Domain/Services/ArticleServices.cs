@@ -10,13 +10,13 @@ namespace VeryGoodNewsPortal.Domain.Services
 {
     public class ArticleServices : IArticleServices
     {
-        private readonly VeryGoodNewsPortalContext _context;
+        //private readonly VeryGoodNewsPortalContext _context;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public ArticleServices(VeryGoodNewsPortalContext context, IUnitOfWork unitOfWork, IMapper mapper)
+        public ArticleServices(/*VeryGoodNewsPortalContext context,*/ IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _context = context;
+            //_context = context;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -82,13 +82,29 @@ namespace VeryGoodNewsPortal.Domain.Services
                 Description = model.Description,
                 Body = model.Body,
                 CreationDate = model.CreationDate,
-                PositivityGrade = model.PositivityGrade,
+                PositivityGrade = entity.PositivityGrade,
                 Comments = entity.Comments,
                 Source = entity.Source,
                 SourceId = entity.SourceId
             };
 
             _unitOfWork.Articles.Update(articleResult);
+            await _unitOfWork.Comit();
+        }
+
+        public async Task DeleteArticle(ArticleDTO model)
+        {
+            var entity = await _unitOfWork.Articles.GetByIdAsync(model.Id);
+
+            _unitOfWork.Articles.Remove(entity);
+            await _unitOfWork.Comit();
+        }
+
+        public async Task CreateArticle(ArticleDTO model)
+        {
+            var entity = _mapper.Map<Article>(model);
+
+            await _unitOfWork.Articles.AddAsync(entity);
             await _unitOfWork.Comit();
         }
     }
