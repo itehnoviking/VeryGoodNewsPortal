@@ -85,7 +85,9 @@ namespace VeryGoodNewsPortal.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(ArticleDetailViewModel viewModel)
         {
-            await _articleService.UpdateArticle(_mapper.Map<ArticleDTO>(viewModel));
+
+            var entity = await _articleService.GetArticleAsync(viewModel.Id);
+            await _articleService.UpdateArticle(_mapper.Map(viewModel, entity));
             return RedirectToAction("Index", "Article");
         }
 

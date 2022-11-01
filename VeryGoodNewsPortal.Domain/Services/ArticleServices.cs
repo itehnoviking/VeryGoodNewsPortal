@@ -73,22 +73,7 @@ namespace VeryGoodNewsPortal.Domain.Services
 
         public async Task UpdateArticle(ArticleDTO model)
         {
-            var entity = await _unitOfWork.Articles.GetByIdAsync(model.Id);
-
-            var articleResult = new Article()
-            {
-                Id = model.Id,
-                Title = model.Title,
-                Description = model.Description,
-                Body = model.Body,
-                CreationDate = model.CreationDate,
-                PositivityGrade = entity.PositivityGrade,
-                Comments = entity.Comments,
-                Source = entity.Source,
-                SourceId = entity.SourceId
-            };
-
-            _unitOfWork.Articles.Update(articleResult);
+            _unitOfWork.Articles.Update(_mapper.Map<Article>(model));
             await _unitOfWork.Comit();
         }
 
