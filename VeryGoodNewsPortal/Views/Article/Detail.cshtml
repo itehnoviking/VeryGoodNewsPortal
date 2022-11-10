@@ -1,8 +1,9 @@
-﻿@{
+﻿@using VeryGoodNewsPortal.Core.DTOs
+@{
     ViewData["Title"] = "Detail";
 }
 
-@model ArticleDetailViewModel
+@model ArticleWithSourceNameAndCommentsViewModel
 
 <div class="container">
     <div class="row gx-5">
@@ -10,7 +11,7 @@
             <h1>@Model.Title</h1>
         </div>
         <div class="offset-6 col-3">
-            <p>@*@Model.ASourceName*@ Block For Source Name</p>
+            <p>@Model.Source.Name</p>
             <p>@Model.CreationDate</p>
         </div>
         <div class="col-12">
@@ -43,21 +44,20 @@
     <hr />
     <div class="row gx-5">
 
-        Block for Comments
-        @*@foreach (var comment in @Model.Comments)
+        @foreach (var comment in @Model.Comments)
         {
-        <div class="offset-2 col-8">
-        <div class="card">
-        <h5 class="card-title">@comment.UserName</h5>
-        <div class="card-body">
-        @comment.Text
-        </div>
-        <div class="card-footer text-muted">
-        Published: @comment.CreationDateTime
-        </div>
-        </div>
-        </div>
-        }*@
+            <div class="offset-2 col-8">
+                <div class="card">
+                    <h5 class="card-title">@comment.User.Email</h5>
+                    <div class="card-body">
+                        @comment.Text
+                    </div>
+                    <div class="card-footer text-muted">
+                        Published: @comment.CreationDate
+                    </div>
+                </div>
+            </div>
+        }
         <hr />
     </div>
 </div>

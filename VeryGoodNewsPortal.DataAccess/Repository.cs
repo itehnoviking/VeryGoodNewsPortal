@@ -39,18 +39,7 @@ namespace VeryGoodNewsPortal.DataAccess
         //}
 
 
-        public virtual IQueryable<T> FindBy(Expression<Func<T, bool>> searchExpression, 
-            params Expression<Func<T, object>>[] includes)
-        {
-            var result = DbSet.Where(searchExpression);
-
-            if (includes.Any())
-            {
-                result = includes.Aggregate(result, (current, include) => 
-                current.Include(include));
-            }
-            return result;
-        }
+        
 
 
         public virtual IQueryable<T> Get()
@@ -71,18 +60,30 @@ namespace VeryGoodNewsPortal.DataAccess
             return await DbSet.ToListAsync();
         }
 
-        //public async virtual Task GetByIdWithIncludes(Guid id, params Expression<Func<T, object>>[] includes)
-        //{
-        //    if (includes.Any())
-        //    {
-        //        return await includes.Aggregate
-        //            (DbSet.Where(entity => entity.Id.Equals(id)),
-        //            (current, include) => current.Include(include)).FirstOrDefaultAsync();
-        //    }
+        public async virtual Task<T?> GetByIdWithIncludes(Guid id, params Expression<Func<T, object>>[] includes)
+        {
+            if (includes.Any())
+            {
+                return await includes.Aggregate
+                    (DbSet.Where(entity => entity.Id.Equals(id)),
+                    (current, include) => current.Include(include)).FirstOrDefaultAsync();
+            }
 
-        //    return await GetById(id);
-        //}
+            return await GetByIdAsync(id);
+        }
 
+        public virtual IQueryable<T> FindBy(Expression<Func<T, bool>> searchExpression,
+            params Expression<Func<T, object>>[] includes)
+        {
+            var result = DbSet.Where(searchExpression);
+
+            if (includes.Any())
+            {
+                result = includes.Aggregate(result, (current, include) =>
+                current.Include(include));
+            }
+            return result;
+        }
 
         public async virtual Task PatchAsync(Guid id, List<PatchModel> patchDtos)
         {

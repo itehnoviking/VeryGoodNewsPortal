@@ -48,9 +48,9 @@ namespace VeryGoodNewsPortal.Controllers
         {
             try
             {
-                var article = await _articleService.GetArticleAsync(id);
+                var article = await _articleService.GetArticleWitchSourceNameAndComments(id);
 
-                var resultModel = _mapper.Map<ArticleDetailViewModel>(article);
+                var resultModel = _mapper.Map<ArticleWithSourceNameAndCommentsViewModel>(article);
 
                 if (article != null)
                 {
@@ -69,17 +69,35 @@ namespace VeryGoodNewsPortal.Controllers
                 return BadRequest();
             }
 
-            
+
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var article = await _articleService.GetArticleAsync(id);
-            var viewModel = _mapper.Map<ArticleDetailViewModel>(article);
 
+            try
+            {
+                var article = await _articleService.GetArticleAsync(id);
+                var viewModel = _mapper.Map<ArticleDetailViewModel>(article);
 
-            return View(viewModel);
+                if (article != null)
+                {
+                    return View(viewModel);
+                }
+
+                else
+                {
+                    throw new ArgumentException();
+                }
+
+            }
+            catch (Exception e)
+            {
+                //todo added loger here 
+
+                return BadRequest();
+            }
         }
 
         [HttpPost]

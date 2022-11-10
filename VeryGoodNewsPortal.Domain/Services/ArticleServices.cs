@@ -10,13 +10,11 @@ namespace VeryGoodNewsPortal.Domain.Services
 {
     public class ArticleServices : IArticleServices
     {
-        //private readonly VeryGoodNewsPortalContext _context;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public ArticleServices(/*VeryGoodNewsPortalContext context,*/ IUnitOfWork unitOfWork, IMapper mapper)
+        public ArticleServices(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            //_context = context;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -69,6 +67,21 @@ namespace VeryGoodNewsPortal.Domain.Services
                 //todo add logger
                 throw;
             }
+        }
+
+        public async Task<ArticleDTO> GetArticleWitchSourceNameAndComments(Guid id)
+        {
+            var articleWithSourceNameAndComments = await _unitOfWork.Articles
+                .Get()
+                .Where(article => article.Id.Equals(id))
+                .Include(article => article.Source)
+                .Include(article => article.Comments)
+                .ThenInclude(comments => comments.User)
+                .FirstOrDefaultAsync();
+
+
+            return _mapper.Map<ArticleDTO>(articleWithSourceNameAndComments);
+            
         }
 
         public async Task UpdateArticle(ArticleDTO model)

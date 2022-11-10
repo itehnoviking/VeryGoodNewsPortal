@@ -17,5 +17,7 @@ namespace VeryGoodNewsPortal.Core.Interfaces
         Task DeleteArticle(ArticleDTO model);
 
         Task CreateArticle(ArticleDTO model);
+
+        Task<ArticleDTO> GetArticleWitchSourceNameAndComments(Guid id);
     }
 }

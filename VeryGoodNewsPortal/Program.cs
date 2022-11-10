@@ -17,6 +17,7 @@ namespace VeryGoodNewsPortal
 
             // DataBase
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
             builder.Services.AddDbContext<VeryGoodNewsPortalContext>(opt => opt.UseSqlServer(connectionString));
 
             // Add services to the container.
@@ -24,10 +25,13 @@ namespace VeryGoodNewsPortal
 
             //DependencyInjection
             builder.Services.AddScoped<IRepository<Article>, ArticleRepository>();
+            builder.Services.AddScoped<IRepository<Comment>, CommentsRepository>();
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             builder.Services.AddScoped<IArticleServices, ArticleServices>();
+
+           
 
             //AutoMapper
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

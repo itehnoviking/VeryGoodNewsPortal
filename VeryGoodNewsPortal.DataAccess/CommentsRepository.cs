@@ -8,9 +8,9 @@ using VeryGoodNewsPortal.Data.Entities;
 
 namespace VeryGoodNewsPortal.DataAccess
 {
-    public class ArticleRepository : Repository<Article>
+    public class CommentsRepository : Repository<Comment>
     {
-        public ArticleRepository(VeryGoodNewsPortalContext context) : base(context)
+        public CommentsRepository(VeryGoodNewsPortalContext context) : base(context)
         {
             
         }

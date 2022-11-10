@@ -14,7 +14,7 @@ namespace VeryGoodNewsPortal.Core.Data
         IQueryable<T> FindBy(Expression<Func<T, bool>> searchExpression,
             params Expression<Func<T, object>>[] includes);
 
-        //Task<T> GetByIdWithIncludes(Guid id, params Expression<Func<T, object>>[] includes);
+        Task<T> GetByIdWithIncludes(Guid id, params Expression<Func<T, object>>[] includes);
 
 
         //Create

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using VeryGoodNewsPortal.Core.Interfaces;
 using VeryGoodNewsPortal.Models;
 
 namespace VeryGoodNewsPortal.Controllers
@@ -13,7 +14,7 @@ namespace VeryGoodNewsPortal.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }

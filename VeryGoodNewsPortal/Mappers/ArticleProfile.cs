@@ -18,6 +18,8 @@ namespace VeryGoodNewsPortal.Mappers
             CreateMap<ArticleDTO, ArticleDeleteViewModel>().ReverseMap();
 
             CreateMap<ArticleCreateViewModel, ArticleDTO>();
+
+            CreateMap<ArticleDTO, ArticleWithSourceNameAndCommentsViewModel>();
         }
     }
 }
