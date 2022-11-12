@@ -26,10 +26,14 @@ namespace VeryGoodNewsPortal
             //DependencyInjection
             builder.Services.AddScoped<IRepository<Article>, ArticleRepository>();
             builder.Services.AddScoped<IRepository<Comment>, CommentsRepository>();
+            builder.Services.AddScoped<IRepository<Role>, RoleRepository>();
+            builder.Services.AddScoped<IRepository<User>, UserRepository>();
+            builder.Services.AddScoped<IRepository<Source>, SourceRepository>();
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             builder.Services.AddScoped<IArticleServices, ArticleServices>();
+            builder.Services.AddScoped<ISourceServices, SourceServices>();
 
            
 

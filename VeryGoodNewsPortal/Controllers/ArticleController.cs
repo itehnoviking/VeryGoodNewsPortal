@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using VeryGoodNewsPortal.Core.DTOs;
 using VeryGoodNewsPortal.Core.Interfaces;
 using VeryGoodNewsPortal.Models;
@@ -9,12 +10,14 @@ namespace VeryGoodNewsPortal.Controllers
     public class ArticleController : Controller
     {
         private readonly IArticleServices _articleService;
+        private readonly ISourceServices _sourceServices;
         private readonly IMapper _mapper;
 
-        public ArticleController(IArticleServices articleService, IMapper mapper)
+        public ArticleController(IArticleServices articleService, IMapper mapper, ISourceServices sourceServices)
         {
             _articleService = articleService;
             _mapper = mapper;
+            _sourceServices = sourceServices;
         }
 
         public async Task<IActionResult> Index()
@@ -129,7 +132,12 @@ namespace VeryGoodNewsPortal.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var viewModel = new ArticleCreateViewModel();
+            var sources = await _sourceServices.GetSourceNameAndId();
+
+            var viewModel = new ArticleCreateViewModel()
+            {
+                SourceNameAndIdModels = sources.Select(source => new SelectListItem(source.Name, source.Id.ToString()))
+            };
 
             return View(viewModel);
         }

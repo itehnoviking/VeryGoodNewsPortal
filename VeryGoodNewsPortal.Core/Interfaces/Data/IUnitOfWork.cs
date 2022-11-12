@@ -11,10 +11,10 @@ namespace VeryGoodNewsPortal.Core.Interfaces.Data
     public interface IUnitOfWork/* : IDisposable*/
     {
         IRepository<Article> Articles { get; }
-        object Roles { get; }
-        object Users { get; }
-        object Sources { get; }
-        object Comments { get; }
+        IRepository<Role> Roles { get; }
+        IRepository<User> Users { get; }
+        IRepository<Source> Sources { get; }
+        IRepository<Comment> Comments { get; }
 
         Task<int> Comit();
     }

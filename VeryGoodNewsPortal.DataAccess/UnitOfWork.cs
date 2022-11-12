@@ -14,25 +14,26 @@ namespace VeryGoodNewsPortal.DataAccess
     {
         private readonly VeryGoodNewsPortalContext _db;
         private readonly IRepository<Article> _articleRepository;
+        private readonly IRepository<Role> _roleRepository;
+        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<Source> _sourceRepository;
+        private readonly IRepository<Comment> _commentRepository;
 
-        public UnitOfWork(IRepository<Article> articleRepository, VeryGoodNewsPortalContext db)
+        public UnitOfWork(VeryGoodNewsPortalContext db, IRepository<Article> articleRepository, IRepository<Role> roleRepository, IRepository<User> userRepository, IRepository<Source> sourceRepository, IRepository<Comment> commentRepository)
         {
-            _articleRepository = articleRepository;
             _db = db;
+            _articleRepository = articleRepository;
+            _roleRepository = roleRepository;
+            _userRepository = userRepository;
+            _sourceRepository = sourceRepository;
+            _commentRepository = commentRepository;
         }
 
-
         public IRepository<Article> Articles => _articleRepository;
-
-        public object Roles { get; }
-
-        public object Users { get; }
-
-        public object Sources { get; }
-
-        public object Comments { get; }
-
-
+        public IRepository<Role> Roles => _roleRepository;
+        public IRepository<User> Users => _userRepository;
+        public IRepository<Source> Sources => _sourceRepository;
+        public IRepository<Comment> Comments => _commentRepository;
 
         public async Task<int> Comit()
         {

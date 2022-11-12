@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace VeryGoodNewsPortal.Core.DTOs
 {
-    internal class ArticleUpdateDTO
+    public class SourceNameAndIdDTO
     {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
     }
 }
