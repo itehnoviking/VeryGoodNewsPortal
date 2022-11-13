@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using VeryGoodNewsPortal.Core.Data;
 using VeryGoodNewsPortal.Core.Interfaces;
 using VeryGoodNewsPortal.Core.Interfaces.Data;
@@ -15,6 +16,8 @@ namespace VeryGoodNewsPortal
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Host.UseSerilog((ctx, lc) =>
+                 lc.MinimumLevel.Warning().WriteTo.File(@"log.log"));
             // DataBase
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -35,7 +38,7 @@ namespace VeryGoodNewsPortal
             builder.Services.AddScoped<IArticleServices, ArticleServices>();
             builder.Services.AddScoped<ISourceServices, SourceServices>();
 
-           
+
 
             //AutoMapper
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

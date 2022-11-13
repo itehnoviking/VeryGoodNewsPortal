@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Serilog;
 using VeryGoodNewsPortal.Core.DTOs;
 using VeryGoodNewsPortal.Core.Interfaces;
 using VeryGoodNewsPortal.Models;
@@ -12,6 +13,7 @@ namespace VeryGoodNewsPortal.Controllers
         private readonly IArticleServices _articleService;
         private readonly ISourceServices _sourceServices;
         private readonly IMapper _mapper;
+        private readonly ILogger<ArticleController> _logger;
 
         public ArticleController(IArticleServices articleService, IMapper mapper, ISourceServices sourceServices)
         {
@@ -41,7 +43,7 @@ namespace VeryGoodNewsPortal.Controllers
             }
             catch (Exception e)
             {
-                //todo added loger here 
+                Log.Fatal(e, $"{e.Message} \n Stack trace:{e.StackTrace}");
 
                 return BadRequest();
             }
@@ -67,7 +69,7 @@ namespace VeryGoodNewsPortal.Controllers
             }
             catch (Exception e)
             {
-                //todo added loger here 
+                Log.Fatal(e, $"{e.Message} \n Stack trace:{e.StackTrace}");
 
                 return BadRequest();
             }
@@ -97,7 +99,7 @@ namespace VeryGoodNewsPortal.Controllers
             }
             catch (Exception e)
             {
-                //todo added loger here 
+                Log.Fatal(e, $"{e.Message} \n Stack trace:{e.StackTrace}");
 
                 return BadRequest();
             }
@@ -106,48 +108,141 @@ namespace VeryGoodNewsPortal.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(ArticleDetailViewModel viewModel)
         {
+            try
+            {
+                var entity = await _articleService.GetArticleAsync(viewModel.Id);
+                await _articleService.UpdateArticle(_mapper.Map(viewModel, entity));
 
-            var entity = await _articleService.GetArticleAsync(viewModel.Id);
-            await _articleService.UpdateArticle(_mapper.Map(viewModel, entity));
-            return RedirectToAction("Index", "Article");
+                if (viewModel != null)
+                {
+                    return RedirectToAction("Index", "Article");
+                }
+
+                else
+                {
+                    throw new ArgumentException();
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Fatal(e, $"{e.Message} \n Stack trace:{e.StackTrace}");
+
+                return BadRequest();
+            }
+
+            
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var article = await _articleService.GetArticleAsync(id);
-            var viewModel = _mapper.Map<ArticleDeleteViewModel>(article);
+            try
+            {
+                var article = await _articleService.GetArticleAsync(id);
+                var viewModel = _mapper.Map<ArticleDeleteViewModel>(article);
 
-            return View(viewModel);
+                if (article != null)
+                {
+                    return View(viewModel);
+                }
+
+                else
+                {
+                    throw new ArgumentException();
+                }
+            }
+            catch (Exception e)
+            {
+
+                Log.Fatal(e, $"{e.Message} \n Stack trace:{e.StackTrace}");
+
+                return BadRequest();
+            }
+
+            
+
+            
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(ArticleDeleteViewModel viewModel)
         {
-            await _articleService.DeleteArticle(_mapper.Map<ArticleDTO>(viewModel));
+            try
+            {
+                await _articleService.DeleteArticle(_mapper.Map<ArticleDTO>(viewModel));
 
-            return RedirectToAction("Index", "Article");
+                if (viewModel != null)
+                {
+                    return RedirectToAction("Index", "Article");
+                }
+
+                else
+                {
+                    throw new ArgumentException();
+                }
+            }
+            catch (Exception e)
+            {
+
+                Log.Fatal(e, $"{e.Message} \n Stack trace:{e.StackTrace}");
+
+                return BadRequest();
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var sources = await _sourceServices.GetSourceNameAndId();
-
-            var viewModel = new ArticleCreateViewModel()
+            try
             {
-                SourceNameAndIdModels = sources.Select(source => new SelectListItem(source.Name, source.Id.ToString()))
-            };
+                var sources = await _sourceServices.GetSourceNameAndId();
 
-            return View(viewModel);
+                var viewModel = new ArticleCreateViewModel()
+                {
+                    SourceNameAndIdModels = sources.Select(source => new SelectListItem(source.Name, source.Id.ToString()))
+                };
+
+                if (viewModel != null)
+                {
+                    return View(viewModel);
+                }
+
+                else
+                {
+                    throw new ArgumentException();
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Fatal(e, $"{e.Message} \n Stack trace:{e.StackTrace}");
+
+                return BadRequest();
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(ArticleCreateViewModel viewModel)
         {
-            await _articleService.CreateArticle(_mapper.Map<ArticleDTO>(viewModel));
+            try
+            {
+                await _articleService.CreateArticle(_mapper.Map<ArticleDTO>(viewModel));
 
-            return RedirectToAction("Index", "Article");
+                if (viewModel != null)
+                {
+                    return RedirectToAction("Index", "Article");
+                }
+
+                else
+                {
+                    throw new ArgumentException();
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Fatal(e, $"{e.Message} \n Stack trace:{e.StackTrace}");
+
+                return BadRequest();
+            }
         }
 
     }
