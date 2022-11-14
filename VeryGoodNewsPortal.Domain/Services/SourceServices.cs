@@ -27,8 +27,6 @@ namespace VeryGoodNewsPortal.Domain.Services
                 .Get()
                 .Select(source => _mapper.Map<SourceNameAndIdDTO>(source))
                 .ToListAsync();
-
-
         }
     }
 }

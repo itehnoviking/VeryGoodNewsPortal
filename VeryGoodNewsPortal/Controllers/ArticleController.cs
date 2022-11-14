@@ -84,7 +84,7 @@ namespace VeryGoodNewsPortal.Controllers
             try
             {
                 var article = await _articleService.GetArticleAsync(id);
-                var viewModel = _mapper.Map<ArticleDetailViewModel>(article);
+                var viewModel = _mapper.Map<ArticleEditViewModel>(article);
 
                 if (article != null)
                 {
@@ -106,11 +106,12 @@ namespace VeryGoodNewsPortal.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(ArticleDetailViewModel viewModel)
+        public async Task<IActionResult> Edit(ArticleEditViewModel viewModel)
         {
             try
             {
                 var entity = await _articleService.GetArticleAsync(viewModel.Id);
+
                 await _articleService.UpdateArticle(_mapper.Map(viewModel, entity));
 
                 if (viewModel != null)
