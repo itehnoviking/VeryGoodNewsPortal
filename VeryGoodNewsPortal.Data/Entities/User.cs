@@ -8,6 +8,7 @@ namespace VeryGoodNewsPortal.Data.Entities
 {
     public class User : BaseEntities
     {
+        public string Name { get; set; }
         public string Email { get; set; }
         public string PasswordHash { get; set; }
         public DateTime RegistrationDate { get; set; }

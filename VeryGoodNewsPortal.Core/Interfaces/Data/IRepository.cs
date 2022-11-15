@@ -29,6 +29,6 @@ namespace VeryGoodNewsPortal.Core.Data
         //Delete
         void Remove(T entity);
 
-        //public Task Dispose();
+        public Task Dispose();
     }
 }

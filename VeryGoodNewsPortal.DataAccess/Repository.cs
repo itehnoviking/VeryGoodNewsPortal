@@ -32,14 +32,14 @@ namespace VeryGoodNewsPortal.DataAccess
         }
 
 
-        //public async virtual Task Dispose()
-        //{
-        //    await Db.DisposeAsync();
-        //    GC.SuppressFinalize(this);
-        //}
+        public async virtual Task Dispose()
+        {
+            await Db.DisposeAsync();
+            GC.SuppressFinalize(this);
+        }
 
 
-        
+
 
 
         public virtual IQueryable<T> Get()
