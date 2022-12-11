@@ -1,5 +1,9 @@
+using FirstMvcApp.Domain.Services;
+using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Diagnostics;
 using VeryGoodNewsPortal.Core.Data;
 using VeryGoodNewsPortal.Core.Interfaces;
 using VeryGoodNewsPortal.Core.Interfaces.Data;
@@ -20,11 +24,7 @@ namespace VeryGoodNewsPortal
                  lc.MinimumLevel.Warning().WriteTo.File(@"log.log"));
             // DataBase
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
             builder.Services.AddDbContext<VeryGoodNewsPortalContext>(opt => opt.UseSqlServer(connectionString));
-
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
 
             //DependencyInjection
             builder.Services.AddScoped<IRepository<Article>, ArticleRepository>();
@@ -35,14 +35,34 @@ namespace VeryGoodNewsPortal
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            builder.Services.AddScoped<IArticleServices, ArticleServices>();
-            builder.Services.AddScoped<ISourceServices, SourceServices>();
-
-
+            builder.Services.AddScoped<IArticleService, ArticleService>();
+            builder.Services.AddScoped<ISourceService, SourceService>();
+            builder.Services.AddScoped<IRssService, RssService>();
+            builder.Services.AddScoped<IHtmlParserService, HtmlParserService>();
 
             //AutoMapper
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            // Add Hangfire services.
+            builder.Services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireConnection"), new SqlServerStorageOptions
+                {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                    QueuePollInterval = TimeSpan.Zero,
+                    UseRecommendedIsolationLevel = true,
+                    DisableGlobalLocks = true
+                }));
+
+            // Add the processing server as IHostedService
+            builder.Services.AddHangfireServer();
+
+
+            // Add services to the container.
+            builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
 
@@ -64,6 +84,16 @@ namespace VeryGoodNewsPortal
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            app.UseHangfireDashboard();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var rssService = scope.ServiceProvider.GetRequiredService<IRssService>();
+                RecurringJob.AddOrUpdate("Aggregation articles from rss",
+                    () => rssService.AggregateArticleDataFromRssSources(),
+                    Cron.Hourly(30));
+            }
 
             app.Run();
         }

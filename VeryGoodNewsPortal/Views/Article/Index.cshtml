@@ -1,6 +1,16 @@
 ﻿@model IList<ArticleListItemViewModel>
 
 <div class="container">
+    <div class="row">
+        <div class="col-4 offset-4">
+            <form asp-controller="Article" asp-action="GetNewsFromSources" method="post">
+                <input class="btn btn-primary" type="submit" value="GET NEWS" />
+                <br/>
+                <br/>
+            </form>
+        </div>
+    </div>
+
     <div class="shadowbox">
         <a asp-controller="Article" asp-action="Create" class="btn btn-secondary">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-plus-fill" viewBox="0 0 16 16">
@@ -9,7 +19,7 @@
         </a>
     </div>
     <br>
-    <div class="row">
+    <div class="row g-3">
         @foreach (var article in Model)
         {
             await Html.RenderPartialAsync("ArticlePreviewPartial", article);

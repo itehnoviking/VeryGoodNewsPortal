@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VeryGoodNewsPortal.Core.DTOs
 {
-    public class SourceNameAndIdDTO
+    public class SourceNameAndIdDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

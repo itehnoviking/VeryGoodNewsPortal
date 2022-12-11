@@ -9,6 +9,8 @@ namespace VeryGoodNewsPortal.Models
         public string Description { get; set; }
         public string Body { get; set; }
 
+        public string SourceUrl { get; set; } = "onliner.by";
+
         public Guid SourceId { get; set; }
 
         public DateTime CreationDate { get; set; }

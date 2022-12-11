@@ -16,6 +16,6 @@ namespace VeryGoodNewsPortal.Core.Interfaces.Data
         IRepository<Source> Sources { get; }
         IRepository<Comment> Comments { get; }
 
-        Task<int> Comit();
+        Task<int> Commit();
     }
 }

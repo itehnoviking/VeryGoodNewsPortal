@@ -8,24 +8,24 @@ using VeryGoodNewsPortal.Data.Entities;
 
 namespace VeryGoodNewsPortal.Domain.Services
 {
-    public class ArticleServices : IArticleServices
+    public class ArticleService : IArticleService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public ArticleServices(IUnitOfWork unitOfWork, IMapper mapper)
+        public ArticleService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        public async Task<IList<ArticleDTO>> GetAllArticlesAsync()
+        public async Task<IList<ArticleDto>> GetAllArticlesAsync()
         {
             try
             {
                 var listArticles = await _unitOfWork.Articles
                     .Get()
-                    .Select(article => _mapper.Map<ArticleDTO>(article)).ToListAsync();
+                    .Select(article => _mapper.Map<ArticleDto>(article)).ToListAsync();
 
                 if (listArticles.Any())
                 {
@@ -45,7 +45,7 @@ namespace VeryGoodNewsPortal.Domain.Services
             }
         }
 
-        public async Task<ArticleDTO> GetArticleAsync(Guid id)
+        public async Task<ArticleDto> GetArticleAsync(Guid id)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace VeryGoodNewsPortal.Domain.Services
 
                 if (article != null)
                 {
-                    return _mapper.Map<ArticleDTO>(article);
+                    return _mapper.Map<ArticleDto>(article);
                 }
 
                 else
@@ -69,7 +69,7 @@ namespace VeryGoodNewsPortal.Domain.Services
             }
         }
 
-        public async Task<ArticleDTO> GetArticleWitchSourceNameAndComments(Guid id)
+        public async Task<ArticleDto> GetArticleWitchSourceNameAndComments(Guid id)
         {
             var articleWithSourceNameAndComments = await _unitOfWork.Articles
                 .Get()
@@ -80,30 +80,44 @@ namespace VeryGoodNewsPortal.Domain.Services
                 .FirstOrDefaultAsync();
 
 
-            return _mapper.Map<ArticleDTO>(articleWithSourceNameAndComments);
+            return _mapper.Map<ArticleDto>(articleWithSourceNameAndComments);
             
         }
 
-        public async Task UpdateArticle(ArticleDTO model)
+        public async Task UpdateArticle(ArticleDto model)
         {
             _unitOfWork.Articles.Update(_mapper.Map<Article>(model));
-            await _unitOfWork.Comit();
+            await _unitOfWork.Commit();
         }
 
-        public async Task DeleteArticle(ArticleDTO model)
+        public async Task DeleteArticle(ArticleDto model)
         {
             var entity = await _unitOfWork.Articles.GetByIdAsync(model.Id);
 
             _unitOfWork.Articles.Remove(entity);
-            await _unitOfWork.Comit();
+            await _unitOfWork.Commit();
         }
 
-        public async Task CreateArticle(ArticleDTO model)
+        public async Task CreateArticle(ArticleDto model)
         {
             var entity = _mapper.Map<Article>(model);
 
             await _unitOfWork.Articles.AddAsync(entity);
-            await _unitOfWork.Comit();
+            await _unitOfWork.Commit();
+        }
+
+        public async Task<List<string>> GetAllExistingArticleUrls()
+        {
+            return await _unitOfWork.Articles.Get().Select(article => article.SourceUrl).ToListAsync();
+        }
+
+        public async Task<int> InsertArticles(IEnumerable<ArticleDto> articles)
+        {
+            var entities = articles.Select(dto => _mapper.Map<Article>(dto)).ToArray();
+
+            await _unitOfWork.Articles.AddRangeAsync(entities);
+
+            return await _unitOfWork.Commit();
         }
     }
 }

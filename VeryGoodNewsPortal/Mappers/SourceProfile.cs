@@ -9,9 +9,15 @@ namespace VeryGoodNewsPortal.Mappers
     {
         public SourceProfile()
         {
-            CreateMap<Source, SourceNameAndIdDTO>().ReverseMap();
+            CreateMap<Source, SourceNameAndIdDto>().ReverseMap();
 
-            CreateMap<SourceNameAndIdDTO, SourceNameAndIdModel>().ReverseMap();
+            CreateMap<SourceNameAndIdDto, SourceNameAndIdModel>().ReverseMap();
+
+            CreateMap<Source, RssUrlsFromSourceDto>()
+                .ForMember(dto => dto.SourceId,
+                    opt => opt.MapFrom(source => source.Id))
+                .ForMember(dto => dto.RssUrl,
+                    opt => opt.MapFrom(source => source.RssUrl));
         }
     }
 }

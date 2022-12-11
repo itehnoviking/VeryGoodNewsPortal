@@ -35,7 +35,7 @@ namespace VeryGoodNewsPortal.DataAccess
         public IRepository<Source> Sources => _sourceRepository;
         public IRepository<Comment> Comments => _commentRepository;
 
-        public async Task<int> Comit()
+        public async Task<int> Commit()
         {
             return await _db.SaveChangesAsync();
         }

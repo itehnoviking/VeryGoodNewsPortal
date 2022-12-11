@@ -2,24 +2,32 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Serilog;
+using System.Collections.Concurrent;
 using VeryGoodNewsPortal.Core.DTOs;
 using VeryGoodNewsPortal.Core.Interfaces;
+using VeryGoodNewsPortal.Domain.Services;
 using VeryGoodNewsPortal.Models;
 
 namespace VeryGoodNewsPortal.Controllers
 {
     public class ArticleController : Controller
     {
-        private readonly IArticleServices _articleService;
-        private readonly ISourceServices _sourceServices;
+        private readonly IArticleService _articleService;
+        private readonly ISourceService _sourceService;
         private readonly IMapper _mapper;
         private readonly ILogger<ArticleController> _logger;
+        private readonly IRssService _rssService;
+        private readonly IHtmlParserService _htmlParserService;
+        private readonly IConfiguration _configuration;
 
-        public ArticleController(IArticleServices articleService, IMapper mapper, ISourceServices sourceServices)
+        public ArticleController(IArticleService articleService, IMapper mapper, ISourceService sourceService, IRssService rssService, IHtmlParserService htmlParserService, IConfiguration configuration)
         {
             _articleService = articleService;
             _mapper = mapper;
-            _sourceServices = sourceServices;
+            _sourceService = sourceService;
+            _rssService = rssService;
+            _htmlParserService = htmlParserService;
+            _configuration = configuration;
         }
 
         public async Task<IActionResult> Index()
@@ -27,6 +35,7 @@ namespace VeryGoodNewsPortal.Controllers
             try
             {
                 var articles = (await _articleService.GetAllArticlesAsync())
+                    .Where(article => !String.IsNullOrWhiteSpace(article.Body))
                     .Select(articles => _mapper.Map<ArticleListItemViewModel>(articles))
                     .OrderByDescending(article => article.CreationDate)
                     .ToList();
@@ -170,7 +179,7 @@ namespace VeryGoodNewsPortal.Controllers
         {
             try
             {
-                await _articleService.DeleteArticle(_mapper.Map<ArticleDTO>(viewModel));
+                await _articleService.DeleteArticle(_mapper.Map<ArticleDto>(viewModel));
 
                 if (viewModel != null)
                 {
@@ -196,7 +205,7 @@ namespace VeryGoodNewsPortal.Controllers
         {
             try
             {
-                var sources = await _sourceServices.GetSourceNameAndId();
+                var sources = await _sourceService.GetSourceNameAndId();
 
                 var viewModel = new ArticleCreateViewModel()
                 {
@@ -226,7 +235,7 @@ namespace VeryGoodNewsPortal.Controllers
         {
             try
             {
-                await _articleService.CreateArticle(_mapper.Map<ArticleDTO>(viewModel));
+                await _articleService.CreateArticle(_mapper.Map<ArticleDto>(viewModel));
 
                 if (viewModel != null)
                 {
@@ -243,6 +252,57 @@ namespace VeryGoodNewsPortal.Controllers
                 Log.Fatal(e, $"{e.Message} \n Stack trace:{e.StackTrace}");
 
                 return BadRequest();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetNewsFromSources()
+        {
+            try
+            {
+                var rssUrls = await _sourceService.GetRssUrlsAsync();
+
+                var concurrentDictionary = new ConcurrentDictionary<string, RssArticleDto>();
+
+                var result = Parallel.ForEach(rssUrls, dto =>
+                {
+                    _rssService.GetArticlesInfoFromRss(dto.RssUrl)
+                          .AsParallel()
+                          .ForAll(articleDto => concurrentDictionary.TryAdd(articleDto.Url, articleDto));
+                });
+
+                var extArticlesUrls = await _articleService.GetAllExistingArticleUrls();
+
+                Parallel.ForEach(extArticlesUrls.Where(url => concurrentDictionary.ContainsKey(url)),
+                    s => concurrentDictionary.Remove(s, out var dto));
+
+                //var groupedRssArticle = concurrentDictionary.GroupBy(pair => _sourceService.GetSourceByUrl(pair.Key).Result);
+                //foreach (var url in extArticlesUrls.Where(url => concurrentDictionary.ContainsKey(url)))
+                //{
+                //    concurrentDictionary.TryRemove(url, out var dto);
+
+                //}
+
+
+                foreach (var rssArticleDto in concurrentDictionary)
+                {
+                    var body = await _htmlParserService.GetArticleContentFromUrlAsync(rssArticleDto.Key);
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                var exMessage = string.Format(_configuration.GetSection("ApplicationVariables")["LogErrorMessageFormat"],
+                    ex.Message,
+                    ex.StackTrace);
+
+                _logger.LogError(ex, exMessage);
+
+                return StatusCode(500, new
+                {
+                    ex.Message
+                });
             }
         }
 

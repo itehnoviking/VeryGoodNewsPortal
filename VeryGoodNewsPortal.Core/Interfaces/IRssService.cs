@@ -7,8 +7,10 @@ using VeryGoodNewsPortal.Core.DTOs;
 
 namespace VeryGoodNewsPortal.Core.Interfaces
 {
-    public interface ISourceServices
+    public interface IRssService
     {
-        Task<IEnumerable<SourceNameAndIdDTO>> GetSourceNameAndId();
+        IEnumerable<RssArticleDto> GetArticlesInfoFromRss(string rssUrl);
+
+        Task<int> AggregateArticleDataFromRssSources();
     }
 }

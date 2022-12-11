@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System.ServiceModel.Syndication;
 using VeryGoodNewsPortal.Core.DTOs;
 using VeryGoodNewsPortal.Data.Entities;
 using VeryGoodNewsPortal.Models;
@@ -9,19 +10,30 @@ namespace VeryGoodNewsPortal.Mappers
     {
         public ArticleProfile()
         {
-            CreateMap<Article, ArticleDTO>().ReverseMap();
+            CreateMap<Article, ArticleDto>().ReverseMap();
 
-            CreateMap<ArticleDTO, ArticleListItemViewModel>();
+            CreateMap<ArticleDto, ArticleListItemViewModel>();
 
-            CreateMap<ArticleDTO, ArticleDetailViewModel>().ReverseMap();
+            CreateMap<ArticleDto, ArticleDetailViewModel>().ReverseMap();
 
-            CreateMap<ArticleDTO, ArticleDeleteViewModel>().ReverseMap();
+            CreateMap<ArticleDto, ArticleDeleteViewModel>().ReverseMap();
 
-            CreateMap<ArticleCreateViewModel, ArticleDTO>();
+            CreateMap<ArticleCreateViewModel, ArticleDto>();
 
-            CreateMap<ArticleDTO, ArticleWithSourceNameAndCommentsViewModel>();
+            CreateMap<ArticleDto, ArticleWithSourceNameAndCommentsViewModel>();
 
-            CreateMap<ArticleDTO, ArticleEditViewModel>().ReverseMap();
+            CreateMap<ArticleDto, ArticleEditViewModel>().ReverseMap();
+
+            CreateMap<SyndicationItem, RssArticleDto>()
+                .ForMember(dto => dto.Url, opt => opt.MapFrom(item => item.Id))
+                .ForMember(dto => dto.Title, opt => opt.MapFrom(item => item.Title.Text))
+                .ForMember(dto => dto.Description, opt => opt.MapFrom(item => item.Summary.Text));
+
+            CreateMap<RssArticleDto, ArticleDto>()
+                .ForMember(dto => dto.Id, opt => opt.AddTransform(guid => Guid.NewGuid()))
+                .ForMember(dto => dto.SourceUrl, opt => opt.MapFrom(item => item.Url))
+                .ForMember(dto => dto.Title, opt => opt.MapFrom(item => item.Title))
+                .ForMember(dto => dto.Description, opt => opt.MapFrom(item => item.Description));
         }
     }
 }

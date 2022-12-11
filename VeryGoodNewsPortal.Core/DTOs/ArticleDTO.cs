@@ -7,7 +7,7 @@ using VeryGoodNewsPortal.Data.Entities;
 
 namespace VeryGoodNewsPortal.Core.DTOs
 {
-    public class ArticleDTO
+    public class ArticleDto
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
@@ -15,6 +15,8 @@ namespace VeryGoodNewsPortal.Core.DTOs
         public string Body { get; set; }
         public DateTime CreationDate { get; set; }
         public int PositivityGrade { get; set; }
+
+        public string SourceUrl { get; set; }
 
         public Guid SourceId { get; set; }
         public Source Source { get; set; }
