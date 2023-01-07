@@ -20,13 +20,15 @@ namespace VeryGoodNewsPortal.Core.Interfaces
         private readonly ILogger<RssService> _logger;
         private readonly ISourceService _sourceService;
         private readonly IArticleService _articleService;
+        private readonly IHtmlParserService _htmlParserService;
 
-        public RssService(IMapper mapper, ILogger<RssService> logger, ISourceService sourceService, IArticleService articleService)
+        public RssService(IMapper mapper, ILogger<RssService> logger, ISourceService sourceService, IArticleService articleService, IHtmlParserService htmlParserService)
         {
             _mapper = mapper;
             _logger = logger;
             _sourceService = sourceService;
             _articleService = articleService;
+            _htmlParserService = htmlParserService;
         }
 
         public async Task<int> AggregateArticleDataFromRssSources()
@@ -35,27 +37,33 @@ namespace VeryGoodNewsPortal.Core.Interfaces
 
             var concurrentDictionary = new ConcurrentDictionary<string, RssArticleDto>();
 
-            var result = Parallel.ForEach(rssUrls, dto =>
+            Parallel.ForEach(rssUrls, dto =>
             {
-                GetArticlesInfoFromRss(dto.RssUrl)
+                GetArticlesInfoFromRss(dto.RssUrl, dto.SourceId)
                       .AsParallel()
                       .ForAll(articleDto => concurrentDictionary.TryAdd(articleDto.Url, articleDto));
             });
 
             var extArticlesUrls = await _articleService.GetAllExistingArticleUrls();
 
-            Parallel.ForEach(extArticlesUrls.Where(url => concurrentDictionary.ContainsKey(url)),
+            var resultDtos = Parallel.ForEach(extArticlesUrls.Where(url => concurrentDictionary.ContainsKey(url)),
                 s => concurrentDictionary.Remove(s, out var dto));
 
             var articleDtos = concurrentDictionary.Values.Select(dto => _mapper.Map<ArticleDto>(dto)).ToArray();
 
+
+            foreach (var dto in articleDtos)
+            {
+                dto.Description = await GetDescriptionTextFromRssTextOnlinerAsync(dto.Description);
+                dto.Body = await _htmlParserService.GetArticleContentFromUrlAsync(dto.SourceUrl);
+            }
 
             return await _articleService.InsertArticles(articleDtos);
         }
 
 
 
-        public IEnumerable<RssArticleDto> GetArticlesInfoFromRss(string rssUrl)
+        public IEnumerable<RssArticleDto> GetArticlesInfoFromRss(string rssUrl, Guid sourceId)
         {
             try
             {
@@ -67,6 +75,11 @@ namespace VeryGoodNewsPortal.Core.Interfaces
                         .Select(item => _mapper.Map<RssArticleDto>(item)).
                         ToList();
 
+                    foreach (var dto in result)
+                    {
+                        dto.SourceId = sourceId;
+                    }
+
                     return result;
                 }
             }
@@ -76,6 +89,15 @@ namespace VeryGoodNewsPortal.Core.Interfaces
                 return null;
             }
 
+        }
+
+        private async Task<string> GetDescriptionTextFromRssTextOnlinerAsync(string text)
+        {
+            var subs = text.Split("<p>");
+
+            var result = subs[2];
+
+            return result.Replace("</p>", "");
         }
     }
 }

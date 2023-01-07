@@ -92,7 +92,7 @@ namespace VeryGoodNewsPortal
                 var rssService = scope.ServiceProvider.GetRequiredService<IRssService>();
                 RecurringJob.AddOrUpdate("Aggregation articles from rss",
                     () => rssService.AggregateArticleDataFromRssSources(),
-                    Cron.Hourly(30));
+                    Cron.Hourly());
             }
 
             app.Run();

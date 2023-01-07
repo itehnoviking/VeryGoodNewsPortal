@@ -17,7 +17,6 @@ namespace FirstMvcApp.Domain.Services
         {
             _sourceService = sourceService;
         }
-
         public async Task<string> GetArticleContentFromUrlAsync(string url)
         {
             var sourceId = await _sourceService.GetSourceByUrl(url);
@@ -25,8 +24,7 @@ namespace FirstMvcApp.Domain.Services
             switch (sourceId.ToString("D").ToUpperInvariant())
             {
                 case "33DF34C2-7DFD-4E72-8730-67B4075B83B8":
-                    var articleBody =  await ParseOnlinerArticle(url);
-                    break;
+                    return await ParseOnlinerArticle(url);
 
                 default:
                     break;
@@ -76,15 +74,15 @@ namespace FirstMvcApp.Domain.Services
                 node.RemoveChildren(specialLinks);
             }
 
-            var banner = node.SelectNodes("//div[@class='news-text']/a[@target, '_blank']");
-            if (banner != null)
-            {
-                node.RemoveChildren(specialLinks);
-            }
+            //var banner = node.SelectNodes("//div[@class='news-text']/a[@target, '_blank']");
+            //if (banner != null)
+            //{
+            //    node.RemoveChildren(specialLinks);
+            //}
 
             var articleText = node.InnerHtml.Trim();
 
-            return null;
+            return articleText;
         }
 
         private async Task<string> ParseLentraRuArticle(string url)

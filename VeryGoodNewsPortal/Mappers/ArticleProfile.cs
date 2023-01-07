@@ -30,10 +30,12 @@ namespace VeryGoodNewsPortal.Mappers
                 .ForMember(dto => dto.Description, opt => opt.MapFrom(item => item.Summary.Text));
 
             CreateMap<RssArticleDto, ArticleDto>()
-                .ForMember(dto => dto.Id, opt => opt.AddTransform(guid => Guid.NewGuid()))
+                .ForMember(dto => dto.Id, opt => opt.MapFrom(guid => Guid.NewGuid()))
                 .ForMember(dto => dto.SourceUrl, opt => opt.MapFrom(item => item.Url))
                 .ForMember(dto => dto.Title, opt => opt.MapFrom(item => item.Title))
-                .ForMember(dto => dto.Description, opt => opt.MapFrom(item => item.Description));
+                .ForMember(dto => dto.Description, opt => opt.MapFrom(item => item.Description))
+                .ForMember(dto => dto.SourceId, opt => opt.MapFrom(item => item.SourceId))
+                .ForMember(dto => dto.CreationDate, opt => opt.MapFrom(date => DateTime.Now));
         }
     }
 }

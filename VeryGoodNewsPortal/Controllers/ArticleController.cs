@@ -260,36 +260,9 @@ namespace VeryGoodNewsPortal.Controllers
         {
             try
             {
-                var rssUrls = await _sourceService.GetRssUrlsAsync();
+                await _rssService.AggregateArticleDataFromRssSources();
 
-                var concurrentDictionary = new ConcurrentDictionary<string, RssArticleDto>();
-
-                var result = Parallel.ForEach(rssUrls, dto =>
-                {
-                    _rssService.GetArticlesInfoFromRss(dto.RssUrl)
-                          .AsParallel()
-                          .ForAll(articleDto => concurrentDictionary.TryAdd(articleDto.Url, articleDto));
-                });
-
-                var extArticlesUrls = await _articleService.GetAllExistingArticleUrls();
-
-                Parallel.ForEach(extArticlesUrls.Where(url => concurrentDictionary.ContainsKey(url)),
-                    s => concurrentDictionary.Remove(s, out var dto));
-
-                //var groupedRssArticle = concurrentDictionary.GroupBy(pair => _sourceService.GetSourceByUrl(pair.Key).Result);
-                //foreach (var url in extArticlesUrls.Where(url => concurrentDictionary.ContainsKey(url)))
-                //{
-                //    concurrentDictionary.TryRemove(url, out var dto);
-
-                //}
-
-
-                foreach (var rssArticleDto in concurrentDictionary)
-                {
-                    var body = await _htmlParserService.GetArticleContentFromUrlAsync(rssArticleDto.Key);
-                }
-
-                return Ok();
+                return RedirectToAction("Index", "Article");
             }
             catch (Exception ex)
             {

@@ -9,7 +9,7 @@ namespace VeryGoodNewsPortal.Core.Interfaces
 {
     public interface IRssService
     {
-        IEnumerable<RssArticleDto> GetArticlesInfoFromRss(string rssUrl);
+        IEnumerable<RssArticleDto> GetArticlesInfoFromRss(string rssUrl, Guid sourceId);
 
         Task<int> AggregateArticleDataFromRssSources();
     }
