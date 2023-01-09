@@ -10,7 +10,8 @@ namespace VeryGoodNewsPortal.Data.Entities
     {
         public string Name { get; set; }
         public string Email { get; set; }
-        public string PasswordHash { get; set; }
+        public string? NormalizedEmail { get; set; }
+        public string? PasswordHash { get; set; }
         public DateTime RegistrationDate { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }

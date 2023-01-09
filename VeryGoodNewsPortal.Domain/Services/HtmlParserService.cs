@@ -74,18 +74,12 @@ namespace FirstMvcApp.Domain.Services
                 node.RemoveChildren(specialLinks);
             }
 
-            //var banner = node.SelectNodes("//div[@class='news-text']/a[@target, '_blank']");
-            //if (banner != null)
-            //{
-            //    node.RemoveChildren(specialLinks);
-            //}
-
             var articleText = node.InnerHtml.Trim();
 
             return articleText;
         }
 
-        private async Task<string> ParseLentraRuArticle(string url)
+        private async Task<string> ParseLentaRuArticle(string url)
         {
             //todo algoryth of web scrab 
 

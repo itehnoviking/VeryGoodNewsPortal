@@ -32,9 +32,12 @@ namespace VeryGoodNewsPortal
             builder.Services.AddScoped<IRepository<Role>, RoleRepository>();
             builder.Services.AddScoped<IRepository<User>, UserRepository>();
             builder.Services.AddScoped<IRepository<Source>, SourceRepository>();
+            builder.Services.AddScoped<IRepository<UserRole>, UserRoleRepository>();
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IArticleService, ArticleService>();
             builder.Services.AddScoped<ISourceService, SourceService>();
             builder.Services.AddScoped<IRssService, RssService>();

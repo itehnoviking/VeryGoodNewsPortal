@@ -72,7 +72,7 @@ namespace VeryGoodNewsPortal.DataAccess
             return await GetByIdAsync(id);
         }
 
-        public virtual IQueryable<T> FindBy(Expression<Func<T, bool>> searchExpression,
+        public async virtual Task<IQueryable<T>> FindBy(Expression<Func<T, bool>> searchExpression,
             params Expression<Func<T, object>>[] includes)
         {
             var result = DbSet.Where(searchExpression);
