@@ -10,6 +10,7 @@ namespace VeryGoodNewsPortal.Core.Interfaces
     public interface IArticleService
     {
         Task<IList<ArticleDto>> GetAllArticlesAsync();
+        Task<IEnumerable<ArticleDto>> GetArticleByPageAsync(int page);
         Task<ArticleDto> GetArticleAsync(Guid id);
 
         Task UpdateArticle(ArticleDto model);

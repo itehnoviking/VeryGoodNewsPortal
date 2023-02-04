@@ -1,0 +1,10 @@
+﻿@model int
+
+<div class="btn-toolbar mb-3" role="toolbar" >
+  <div class="btn-group me-2" role="group" >
+      @for (int i = 1; i <= Model; i++)
+        {
+            <a asp-controller="Article" asp-action="Index" asp-route-page="@i" class="btn btn-outline-secondary">@i.ToString()</a>
+        }
+  </div>
+</div>

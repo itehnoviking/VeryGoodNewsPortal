@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using VeryGoodNewsPortal.Core.DTOs;
 using VeryGoodNewsPortal.Core.Interfaces;
 using VeryGoodNewsPortal.Core.Interfaces.Data;
@@ -12,11 +13,13 @@ namespace VeryGoodNewsPortal.Domain.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
-        public ArticleService(IUnitOfWork unitOfWork, IMapper mapper)
+        public ArticleService(IUnitOfWork unitOfWork, IMapper mapper, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
         public async Task<IList<ArticleDto>> GetAllArticlesAsync()
@@ -118,6 +121,18 @@ namespace VeryGoodNewsPortal.Domain.Services
             await _unitOfWork.Articles.AddRangeAsync(entities);
 
             return await _unitOfWork.Commit();
+        }
+
+        public async Task<IEnumerable<ArticleDto>> GetArticleByPageAsync(int page)
+        {
+            var pageSize = Convert.ToInt32(_configuration["ApplicationVariables:PageSize"]);
+            return await _unitOfWork.Articles
+                .Get()
+                .OrderByDescending(article => article.CreationDate)
+                .Skip(page * pageSize)
+                .Take(pageSize)
+                .Select(article => _mapper.Map<ArticleDto>(article))
+                .ToArrayAsync();
         }
     }
 }

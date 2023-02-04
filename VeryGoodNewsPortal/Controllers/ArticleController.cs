@@ -30,19 +30,33 @@ namespace VeryGoodNewsPortal.Controllers
             _configuration = configuration;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
             try
             {
-                var articles = (await _articleService.GetAllArticlesAsync())
-                    .Where(article => !String.IsNullOrWhiteSpace(article.Body))
-                    .Select(articles => _mapper.Map<ArticleListItemViewModel>(articles))
-                    .OrderByDescending(article => article.CreationDate)
-                    .ToList();
+                var pageSize = Convert.ToInt32(_configuration["ApplicationVariables:PageSize"]);
+
+                var pageAmount = Convert.ToInt32(Math.Ceiling((double)(await _articleService.GetAllArticlesAsync()).Count() / pageSize));
+
+                var articles = (await _articleService.GetArticleByPageAsync(page - 1))
+                .Select(article => _mapper.Map<ArticleListItemViewModel>(article))
+                .OrderByDescending(article => article.CreationDate).ToList();
+
+                //var articles = (await _articleService.GetAllArticlesAsync())
+                //    .Where(article => !String.IsNullOrWhiteSpace(article.Body))
+                //    .Select(articles => _mapper.Map<ArticleListItemViewModel>(articles))
+                //    .OrderByDescending(article => article.CreationDate)
+                //    .ToList();
 
                 if (articles.Any())
                 {
-                    return View(articles);
+                    var model = new ArticleIndexViewModel()
+                    {
+                        ArticleLists = articles,
+                        PagesAmount = pageAmount
+                    };
+
+                    return View(model);
                 }
 
                 else

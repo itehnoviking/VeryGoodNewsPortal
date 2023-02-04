@@ -1,4 +1,4 @@
-﻿@model IList<ArticleListItemViewModel>
+﻿@model ArticleIndexViewModel
 
 <div class="container">
     <div class="row">
@@ -20,9 +20,11 @@
     </div>
     <br>
     <div class="row g-3">
-        @foreach (var article in Model)
+        @foreach (var article in @Model.ArticleLists)
         {
             await Html.RenderPartialAsync("ArticlePreviewPartial", article);
         }
     </div>
 </div>
+
+@await Html.PartialAsync("ArticlesPaginationPartial", Model.PagesAmount);
