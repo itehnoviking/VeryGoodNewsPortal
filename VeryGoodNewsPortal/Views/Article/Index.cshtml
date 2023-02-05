@@ -11,6 +11,21 @@
         </div>
     </div>
 
+    <div class="mb-3 row">
+        <div class="col-sm-11">
+            <input type="text" name="searchText" class="form-control" id="search-article-text" />
+        </div>
+        <div class="col-sm-1">
+            <button type="submit" class="btn btn-primary mb-3" id="search-article-btn">Search</button>
+        </div>
+    </div>
+
+    <div id="spinner" class="spinner-border" role="status" hidden>
+        <span class="visually-hidden">
+            Loading...
+        </span>
+    </div>
+
     <div class="shadowbox">
         <a asp-controller="Article" asp-action="Create" class="btn btn-secondary">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-plus-fill" viewBox="0 0 16 16">
@@ -19,7 +34,7 @@
         </a>
     </div>
     <br>
-    <div class="row g-3">
+    <div class="row g-3" id="article-list">
         @foreach (var article in @Model.ArticleLists)
         {
             await Html.RenderPartialAsync("ArticlePreviewPartial", article);
@@ -28,3 +43,9 @@
 </div>
 
 @await Html.PartialAsync("ArticlesPaginationPartial", Model.PagesAmount);
+
+@section Scripts
+    {
+    <script src="~/js/article.js"></script>
+}
+

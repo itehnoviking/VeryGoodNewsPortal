@@ -6,6 +6,10 @@
             <h5 class="card-title">@Model.Title</h5>
             <p class="card-text">@Html.Raw(@Model.Description)</p>
              <a asp-action="Detail" asp-route-id="@Model.Id" class="btn btn-primary">Detail</a>
+             <article-buttons-block>
+                <a class="btn btn-warning" asp-controller="Article" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+                <a class="btn btn-danger" asp-controller="Article" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+            </article-buttons-block>
         </div>
         <div class="card-footer text-muted">Published @Model.CreationDate </div>
     </div>

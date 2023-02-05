@@ -20,6 +20,8 @@ namespace VeryGoodNewsPortal.Controllers
         private readonly IHtmlParserService _htmlParserService;
         private readonly IConfiguration _configuration;
 
+        private readonly int _pageSize;
+
         public ArticleController(IArticleService articleService, IMapper mapper, ISourceService sourceService, IRssService rssService, IHtmlParserService htmlParserService, IConfiguration configuration)
         {
             _articleService = articleService;
@@ -28,15 +30,16 @@ namespace VeryGoodNewsPortal.Controllers
             _rssService = rssService;
             _htmlParserService = htmlParserService;
             _configuration = configuration;
+
+            _pageSize = Convert.ToInt32(_configuration["ApplicationVariables:PageSize"]);
         }
 
         public async Task<IActionResult> Index(int page = 1)
         {
             try
-            {
-                var pageSize = Convert.ToInt32(_configuration["ApplicationVariables:PageSize"]);
+            { 
 
-                var pageAmount = Convert.ToInt32(Math.Ceiling((double)(await _articleService.GetAllArticlesAsync()).Count() / pageSize));
+                var pageAmount = Convert.ToInt32(Math.Ceiling((double)(await _articleService.GetAllArticlesAsync()).Count() / _pageSize));
 
                 var articles = (await _articleService.GetArticleByPageAsync(page - 1))
                 .Select(article => _mapper.Map<ArticleListItemViewModel>(article))
@@ -70,6 +73,17 @@ namespace VeryGoodNewsPortal.Controllers
 
                 return BadRequest();
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Search([FromBody] SearchArticlesModel model)
+        {
+            var searchData = (await _articleService.GetArticleByNameAsync(model.SearchText))
+                .Select(article => _mapper.Map<ArticleListItemViewModel>(article))
+                .OrderByDescending(article => article.CreationDate)
+                .ToList();
+
+            return View("SearchPartial", searchData);
         }
 
         public async Task<IActionResult> Detail(Guid id)

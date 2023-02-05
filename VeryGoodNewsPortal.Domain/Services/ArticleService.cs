@@ -84,7 +84,7 @@ namespace VeryGoodNewsPortal.Domain.Services
 
 
             return _mapper.Map<ArticleDto>(articleWithSourceNameAndComments);
-            
+
         }
 
         public async Task UpdateArticle(ArticleDto model)
@@ -133,6 +133,17 @@ namespace VeryGoodNewsPortal.Domain.Services
                 .Take(pageSize)
                 .Select(article => _mapper.Map<ArticleDto>(article))
                 .ToArrayAsync();
+        }
+
+        public async Task<IEnumerable<ArticleDto>> GetArticleByNameAsync(string name)
+        {
+            var articles = await _unitOfWork.Articles.Get()
+                .Where(article => article.Title.Contains(name))
+                .Select(article => _mapper.Map<ArticleDto>(article))
+                .ToListAsync();
+
+            return articles;
+
         }
     }
 }

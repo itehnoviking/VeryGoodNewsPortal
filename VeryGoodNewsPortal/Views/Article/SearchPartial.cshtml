@@ -1,0 +1,13 @@
+﻿@model List<ArticleListItemViewModel>
+
+@{
+    Layout = null;
+}
+
+<div class="row g-5" id="article-list">
+    @foreach (var article in Model)
+    {
+        await Html.RenderPartialAsync("ArticlePreviewPartial", article);
+    }
+</div>
+}
