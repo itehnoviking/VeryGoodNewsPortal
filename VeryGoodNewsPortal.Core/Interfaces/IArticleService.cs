@@ -13,6 +13,7 @@ namespace VeryGoodNewsPortal.Core.Interfaces
         Task<IEnumerable<ArticleDto>> GetArticleByPageAsync(int page);
         Task<ArticleDto> GetArticleAsync(Guid id);
         Task<IEnumerable<ArticleDto>> GetArticleByNameAsync(string name);
+        Task<string[]> GetAllArticlesTitlesAsync();
         Task UpdateArticle(ArticleDto model);
 
         Task DeleteArticle(ArticleDto model);

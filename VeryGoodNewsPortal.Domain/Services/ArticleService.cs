@@ -145,5 +145,10 @@ namespace VeryGoodNewsPortal.Domain.Services
             return articles;
 
         }
+
+        public async Task<string[]> GetAllArticlesTitlesAsync()
+        {
+            return await _unitOfWork.Articles.Get().Select(a => a.Title).ToArrayAsync();
+        }
     }
 }

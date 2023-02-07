@@ -86,6 +86,13 @@ namespace VeryGoodNewsPortal.Controllers
             return View("SearchPartial", searchData);
         }
 
+        public async Task<IActionResult> GetTitles(string title)
+        {
+            var titles = await _articleService.GetAllArticlesTitlesAsync();
+
+            return Ok(titles.Where(s => s.StartsWith(title, StringComparison.InvariantCultureIgnoreCase)).ToArray());
+        }
+
         public async Task<IActionResult> Detail(Guid id)
         {
             try

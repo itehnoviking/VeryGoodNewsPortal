@@ -5,15 +5,16 @@
         <div class="col-4 offset-4">
             <form asp-controller="Article" asp-action="GetNewsFromSources" method="post">
                 <input class="btn btn-primary" type="submit" value="GET NEWS" />
-                <br/>
-                <br/>
+                <br />
+                <br />
             </form>
         </div>
     </div>
 
     <div class="mb-3 row">
         <div class="col-sm-11">
-            <input type="text" name="searchText" class="form-control" id="search-article-text" />
+            <input type="text" name="searchText" class="form-control" id="search-article-text" list="titles-list" />
+            <datalist id="titles-list"></datalist>
         </div>
         <div class="col-sm-1">
             <button type="submit" class="btn btn-primary mb-3" id="search-article-btn">Search</button>
@@ -47,5 +48,81 @@
 @section Scripts
     {
     <script src="~/js/article.js"></script>
+
+    <script>
+
+        let list = document.getElementById('titles-list');
+        let titlesInput = document.getElementById('search-article-text');
+
+        titlesInput.addEventListener('keyup', autocomplete);
+
+        function autocomplete(event) {
+            let value = event.target.value;
+            list.innerHTML = '';
+
+            if (value.length >= 3) {
+                fetch(`/article/gettitles?title=${value}`, { method: 'get' })
+                    .then((response) => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        else {
+                            console.log(response.status);
+                            return null;
+                        }
+                    })
+                    .then((json) => {
+                        console.log(json);
+                        json.forEach(function(title) {
+                            let opt = document.createElement('option');
+                            opt.value = title;
+                            list.appendChild(opt);
+                        });
+                    });
+            }
+        }
+
+    </script>
 }
 
+
+
+    @*<input class="form-control" list="countries-list" id="countries-input" placeholder="Type to search...">
+    <datalist id="countries-list"></datalist>*@
+
+    @*@section Scripts{
+    <script>
+
+        let list = document.getElementById('titles-list');
+        let titlesInput = document.getElementById('search-article-text');
+
+        countriesInput.addEventListener('keyup', autocomplete);
+
+        function autocomplete(event) {
+            let value = event.target.value;
+            list.innerHTML = '';
+
+            if (value.length >= 3) {
+                fetch(`/home/gettitles?title=${value}`, { method: 'get' })
+                    .then((response) => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        else {
+                            console.log(response.status);
+                            return null;
+                        }
+                    })
+                    .then((json) => {
+                        console.log(json);
+                        json.forEach(function(title) {
+                            let opt = document.createElement('option');
+                            opt.value = title;
+                            list.appendChild(opt);
+                        });
+                    });
+            }
+        }
+
+    </script>
+}*@
