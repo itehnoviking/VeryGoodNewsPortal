@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FirstMvcApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using VeryGoodNewsPortal.Core.DTOs;
@@ -20,6 +21,46 @@ namespace VeryGoodNewsPortal.Domain.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _configuration = configuration;
+        }
+
+        public async Task<int> UpdatePositivityGradeArticle(Guid articleId, int positivityGrade)
+        {
+            var article = await _unitOfWork.Articles.GetByIdAsync(articleId);
+
+            await _unitOfWork.Articles.PatchAsync(articleId, new List<PatchModel>()
+            {
+                new PatchModel()
+                {
+                    PropertyName = "PositivityGrade",
+                    PropertyValue = positivityGrade
+                }
+            });
+
+            return await _unitOfWork.Commit();
+        }
+
+        public async Task<GuidAndTitleArticleDTO> GetArticleTitleWithoutPositivityGrade()
+        {
+            try
+            {
+                var article = (await _unitOfWork.Articles.FindBy(article => article.PositivityGrade.Equals(0))).FirstOrDefault();
+
+                if (article != null && article.Title != null)
+                {
+                    return _mapper.Map<GuidAndTitleArticleDTO>(article);
+                }
+
+                else
+                {
+                    throw new ArgumentException();
+                }
+
+            }
+            catch (Exception e)
+            {
+                //todo add logger here
+                throw;
+            }
         }
 
         public async Task<IList<ArticleDto>> GetAllArticlesAsync()

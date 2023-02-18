@@ -47,6 +47,7 @@ namespace VeryGoodNewsPortal
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            services.AddScoped<IPositivityGradeService, PositivityGradeService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IArticleService, ArticleService>();
@@ -84,6 +85,14 @@ namespace VeryGoodNewsPortal
 
             services.AddAuthorization();
 
+            services
+            .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(opt =>
+            {
+                opt.LoginPath = "/account/login";
+                opt.AccessDeniedPath = "/access-denied";
+            });
+
             services.AddControllersWithViews();
         }
 
@@ -119,6 +128,11 @@ namespace VeryGoodNewsPortal
             RecurringJob.AddOrUpdate("Aggregation articles from rss",
                 () => rssService.AggregateArticleDataFromRssSources(),
                 Cron.Hourly());
+
+            var positivityGradeService = serviceProvider.GetRequiredService<IPositivityGradeService>();
+            RecurringJob.AddOrUpdate("Update positivity grade article",
+                () => positivityGradeService.GetAndSavingPositivityGrade(),
+                Cron.MinuteInterval(5));
         }
     }
 }

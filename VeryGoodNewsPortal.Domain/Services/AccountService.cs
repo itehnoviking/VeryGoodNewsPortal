@@ -59,7 +59,7 @@ namespace VeryGoodNewsPortal.Domain.Services
 
         public async Task<int> SetPasswordAsync(Guid userId, string password)
         {
-            var user = await _unitOfWork.Users.GetByIdAsync(userId);
+            //var user = await _unitOfWork.Users.GetByIdAsync(userId);
 
             await _unitOfWork.Users.PatchAsync(userId, new List<PatchModel>() {
 

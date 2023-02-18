@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VeryGoodNewsPortal.Core", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VeryGoodNewsPortal.DataAccess", "VeryGoodNewsPortal.DataAccess\VeryGoodNewsPortal.DataAccess.csproj", "{2CFD52F1-5940-47FC-B657-55DF7978E6CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VeryGoodNewsPortal.Domain", "VeryGoodNewsPortal.Domain\VeryGoodNewsPortal.Domain.csproj", "{0EC9CED0-C212-4968-9CFA-00695DDA07F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VeryGoodNewsPortal.Domain", "VeryGoodNewsPortal.Domain\VeryGoodNewsPortal.Domain.csproj", "{0EC9CED0-C212-4968-9CFA-00695DDA07F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

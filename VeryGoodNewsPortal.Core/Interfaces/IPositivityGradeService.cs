@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace VeryGoodNewsPortal.Core.Interfaces
 {
-    public interface IHtmlParserService
+    public interface IPositivityGradeService
     {
-        Task<string> GetArticleContentFromUrlAsync(string url);
-        //string DeleteAllHtmlTegsInText(string text);
+        Task GetAndSavingPositivityGrade();
     }
 }

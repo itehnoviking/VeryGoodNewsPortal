@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Serilog;
@@ -10,6 +11,7 @@ using VeryGoodNewsPortal.Models;
 
 namespace VeryGoodNewsPortal.Controllers
 {
+    [Authorize(Roles = "User, Admin")]
     public class ArticleController : Controller
     {
         private readonly IArticleService _articleService;
@@ -19,10 +21,11 @@ namespace VeryGoodNewsPortal.Controllers
         private readonly IRssService _rssService;
         private readonly IHtmlParserService _htmlParserService;
         private readonly IConfiguration _configuration;
+        private readonly IPositivityGradeService _positivityGradeService;
 
         private readonly int _pageSize;
 
-        public ArticleController(IArticleService articleService, IMapper mapper, ISourceService sourceService, IRssService rssService, IHtmlParserService htmlParserService, IConfiguration configuration)
+        public ArticleController(IArticleService articleService, IMapper mapper, ISourceService sourceService, IRssService rssService, IHtmlParserService htmlParserService, IConfiguration configuration, IPositivityGradeService positivityGradeService)
         {
             _articleService = articleService;
             _mapper = mapper;
@@ -30,9 +33,11 @@ namespace VeryGoodNewsPortal.Controllers
             _rssService = rssService;
             _htmlParserService = htmlParserService;
             _configuration = configuration;
+            _positivityGradeService = positivityGradeService;
 
             _pageSize = Convert.ToInt32(_configuration["ApplicationVariables:PageSize"]);
         }
+
 
         public async Task<IActionResult> Index(int page = 1)
         {
@@ -90,7 +95,7 @@ namespace VeryGoodNewsPortal.Controllers
         {
             var titles = await _articleService.GetAllArticlesTitlesAsync();
 
-            return Ok(titles.Where(s => s.StartsWith(title, StringComparison.InvariantCultureIgnoreCase)).ToArray());
+            return Ok(titles.Where(s => s.Contains(title, StringComparison.InvariantCultureIgnoreCase)).ToArray());
         }
 
         public async Task<IActionResult> Detail(Guid id)
@@ -313,6 +318,5 @@ namespace VeryGoodNewsPortal.Controllers
                 });
             }
         }
-
     }
 }

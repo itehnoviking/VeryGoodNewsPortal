@@ -12,6 +12,8 @@ namespace VeryGoodNewsPortal.Mappers
         {
             CreateMap<Article, ArticleDto>().ReverseMap();
 
+            CreateMap<Article, GuidAndTitleArticleDTO>().ReverseMap();
+
             CreateMap<ArticleDto, ArticleListItemViewModel>();
 
             CreateMap<ArticleDto, ArticleDetailViewModel>().ReverseMap();

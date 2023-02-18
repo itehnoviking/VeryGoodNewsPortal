@@ -92,5 +92,14 @@ namespace FirstMvcApp.Domain.Services
 
             return null;
         }
+
+        //public string DeleteAllHtmlTegsInText(string text)
+        //{
+        //    var htmlDoc = new HtmlDocument();
+        //    htmlDoc.LoadHtml(text);
+        //    string result = htmlDoc.DocumentNode.InnerText;
+
+        //    return result;
+        //}
     }
 }

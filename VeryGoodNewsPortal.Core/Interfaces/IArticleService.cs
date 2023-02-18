@@ -9,6 +9,7 @@ namespace VeryGoodNewsPortal.Core.Interfaces
 {
     public interface IArticleService
     {
+        Task<int> UpdatePositivityGradeArticle(Guid articleId, int positivityGrade);
         Task<IList<ArticleDto>> GetAllArticlesAsync();
         Task<IEnumerable<ArticleDto>> GetArticleByPageAsync(int page);
         Task<ArticleDto> GetArticleAsync(Guid id);
@@ -25,5 +26,6 @@ namespace VeryGoodNewsPortal.Core.Interfaces
         Task<List<string>> GetAllExistingArticleUrls();
 
         Task<int> InsertArticles(IEnumerable<ArticleDto> articles);
+        Task<GuidAndTitleArticleDTO> GetArticleTitleWithoutPositivityGrade();
     }
 }
