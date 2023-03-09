@@ -49,7 +49,7 @@ namespace VeryGoodNewsPortal.Domain.Services
                         .Accept
                         .Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
 
-                    var request = new HttpRequestMessage(HttpMethod.Post, "http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=15031bb039d704a3af5d07194f427aa3bf297058")
+                    var request = new HttpRequestMessage(HttpMethod.Post, $"http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey={_configuration["ApplicationVariables:IsprasKey"]}")
                     {
                         Content = new StringContent("[{\"text\":\"" + title + "\"}]",
 
@@ -136,11 +136,16 @@ namespace VeryGoodNewsPortal.Domain.Services
                 if (dictionaryFromAffinJson.ContainsKey(kvp.Key))
                 {
                     positivityGrade = positivityGrade + (dictionaryFromAffinJson[kvp.Key] * kvp.Value);
+
+                    if (positivityGrade == 0)
+                    {
+                        positivityGrade++;
+                    }
                 }
 
                 else
                 {
-                    positivityGrade =+ positivityGrade + 0;
+                    continue;
                 }
             }
 

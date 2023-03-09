@@ -15,6 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VeryGoodNewsPortal.DataAcce
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VeryGoodNewsPortal.Domain", "VeryGoodNewsPortal.Domain\VeryGoodNewsPortal.Domain.csproj", "{0EC9CED0-C212-4968-9CFA-00695DDA07F2}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VeryGoodNewsPortal.WebApi", "VeryGoodNewsPortal.WebApi\VeryGoodNewsPortal.WebApi.csproj", "{E1AAD70E-EDA0-40D7-A514-589C27B92783}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VeryGoodNewsPortal.Cqs", "VeryGoodNewsPortal.Cqs\VeryGoodNewsPortal.Cqs.csproj", "{FD330696-67EE-4C6F-9B4B-FD8FA31E1581}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +45,14 @@ Global
 		{0EC9CED0-C212-4968-9CFA-00695DDA07F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EC9CED0-C212-4968-9CFA-00695DDA07F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EC9CED0-C212-4968-9CFA-00695DDA07F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1AAD70E-EDA0-40D7-A514-589C27B92783}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1AAD70E-EDA0-40D7-A514-589C27B92783}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1AAD70E-EDA0-40D7-A514-589C27B92783}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1AAD70E-EDA0-40D7-A514-589C27B92783}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD330696-67EE-4C6F-9B4B-FD8FA31E1581}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD330696-67EE-4C6F-9B4B-FD8FA31E1581}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD330696-67EE-4C6F-9B4B-FD8FA31E1581}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD330696-67EE-4C6F-9B4B-FD8FA31E1581}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,6 +60,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{E9409D94-B692-4CE0-B9A2-3E49CA19A998} = {BD268F8D-2CA4-4A0E-B3C0-06CE8639DE56}
 		{2CFD52F1-5940-47FC-B657-55DF7978E6CC} = {BD268F8D-2CA4-4A0E-B3C0-06CE8639DE56}
+		{FD330696-67EE-4C6F-9B4B-FD8FA31E1581} = {BD268F8D-2CA4-4A0E-B3C0-06CE8639DE56}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {86B57212-79C0-4986-A219-152877433B08}

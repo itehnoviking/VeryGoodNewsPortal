@@ -7,17 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Handlers\CommandHandlers\" />
+    <Folder Include="Models\Commands\" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
     <PackageReference Include="MediatR" Version="10.0.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-    <PackageReference Include="System.ServiceModel.Syndication" Version="7.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\VeryGoodNewsPortal.Core\VeryGoodNewsPortal.Core.csproj" />
-    <ProjectReference Include="..\VeryGoodNewsPortal.Cqs\VeryGoodNewsPortal.Cqs.csproj" />
   </ItemGroup>
 
 </Project>
