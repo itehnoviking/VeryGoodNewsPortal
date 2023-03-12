@@ -23,11 +23,12 @@ namespace VeryGoodNewsPortal.Cqs.Handlers.QueryHandlers.ArticleQueryHandlers
             _mapper = mapper;
         }
 
-        public async Task<ArticleDto> Handle(GetArticleByIdQuery request, CancellationToken cancellationToken)
+        public async Task<ArticleDto> Handle(GetArticleByIdQuery request, CancellationToken token)
         {
             var article = await _database.Articles
+                .AsNoTracking()
                 .Where(article => article.Id.Equals(request.Id))
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken:token);
 
             return _mapper.Map<ArticleDto>(article);
         }

@@ -11,6 +11,7 @@ using VeryGoodNewsPortal.Core.Interfaces;
 using VeryGoodNewsPortal.Core.Interfaces.Data;
 using VeryGoodNewsPortal.Data.Entities;
 using System.Security.Cryptography;
+using VeryGoodNewsPortal.Core.DTOs;
 
 namespace VeryGoodNewsPortal.Domain.Services
 {
@@ -103,7 +104,7 @@ namespace VeryGoodNewsPortal.Domain.Services
             return await _unitOfWork.Commit();
         }
 
-        public async Task<bool> CheckPassword(string email, string password)
+        public async Task<bool> CheckPasswordAsync(string email, string password)
         {
             var userId = await GetUserIdByEmailAsync(email);
 
@@ -147,6 +148,37 @@ namespace VeryGoodNewsPortal.Domain.Services
             }
 
             return names;
+        }
+
+        public async Task<UserDto> GetUserByEmailAsync(string email)
+        {
+            var normalizedEmail = email.ToUpperInvariant();
+
+            var user = await _unitOfWork.Users.Get()
+                .Where(user => user.NormalizedEmail != null && user.NormalizedEmail.Equals(normalizedEmail))
+                .Include(user => user.UserRoles)
+                .ThenInclude(role => role.Role)
+                .FirstOrDefaultAsync();
+
+            return _mapper.Map<UserDto>(user);
+        }
+
+        public async Task<UserDto> GetUserByRefreshTokenAsync(string refreshToken)
+        {
+            //var user = (await (await _unitOfWork.RefreshTokens.FindBy(token => token.Token.Equals(refreshToken))).FirstOrDefaultAsync()).User;
+
+            var userId = (await (await _unitOfWork.RefreshTokens.FindBy(token => token.Token.Equals(refreshToken))).FirstOrDefaultAsync()).UserId;
+
+            var user = await GetUserByIdAsync(userId);
+
+            return user;
+        }
+
+        public async Task<UserDto> GetUserByIdAsync(Guid id)
+        {
+            var user = _mapper.Map<UserDto>(await _unitOfWork.Users.GetByIdAsync(id));
+
+            return user;
         }
     }
 }

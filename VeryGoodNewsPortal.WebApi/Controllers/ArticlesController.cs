@@ -1,17 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
 using VeryGoodNewsPortal.Core.DTOs;
-using VeryGoodNewsPortal.Core.Interfaces;
 using VeryGoodNewsPortal.Core.Interfaces.InterfacesCqs;
 using VeryGoodNewsPortal.WebApi.Models.Responses;
 
@@ -31,7 +21,7 @@ namespace VeryGoodNewsPortal.WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        //[Authorize]
+        [Authorize]
         [ProducesResponseType(typeof(ArticleDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ResponseErrorMessage), 500)]
         [ProducesResponseType(typeof(ResponseErrorMessage), (int)HttpStatusCode.BadRequest)]
@@ -44,7 +34,7 @@ namespace VeryGoodNewsPortal.WebApi.Controllers
                     return BadRequest(new ResponseErrorMessage { Message = "Identificator is incorrect" });
                 }
 
-                var article = await _articleServiceCqs.GetArticleById(id);
+                var article = await _articleServiceCqs.GetArticleByIdAsync(id);
 
                 if (article != null)
                 {
@@ -60,31 +50,31 @@ namespace VeryGoodNewsPortal.WebApi.Controllers
             }
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> Get(GetArticleRequest request)
-        //{
-        //    try
-        //    {
-        //        if (!(string.IsNullOrEmpty(request.Name) && string.IsNullOrWhiteSpace(request.Name)))
-        //        {
-        //            var articles = await _articleService.GetArticleByNameAsync(request.Name);
-        //            if (articles != null)
-        //            {
-        //                if (request.StartDate != null)
-        //                {
-        //                    articles.Where(dto => dto.CreationDate >= request.StartDate)
-        //                }
-        //            }
-        //        }
+        [HttpGet]
+        [Authorize]
+        [ProducesResponseType(typeof(IEnumerable<ArticleDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseErrorMessage), 500)]
+        [ProducesResponseType(typeof(ResponseNoContentMessage), 204)]
+        public async Task<IActionResult> Get(int? page)
+        {
+            try
+            {
+                var articles = await _articleServiceCqs.GetAllArticlesAsync(page);
 
+                if (articles == null || !articles.Any())
+                {
+                    return StatusCode(204, new ResponseNoContentMessage { Message = "No content" });
+                }
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, ex.Message);
-        //        throw;
-        //    }
-        //}
+                return Ok(articles);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return StatusCode(500, new ResponseErrorMessage { Message = ex.Message });
+            }
+        }
 
 
     }

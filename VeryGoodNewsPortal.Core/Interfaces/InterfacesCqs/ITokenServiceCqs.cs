@@ -7,9 +7,9 @@ using VeryGoodNewsPortal.Core.DTOs;
 
 namespace VeryGoodNewsPortal.Core.Interfaces.InterfacesCqs
 {
-    public interface IArticleServiceCqs
+    public interface ITokenServiceCqs
     {
-        Task<ArticleDto> GetArticleByIdAsync(Guid id);
-        Task<IEnumerable<ArticleDto>> GetAllArticlesAsync(int? page);
+        Task<RefreshTokenDto> GetRefreshTokenAsync(string refreshToken);
+        Task<RefreshTokenDto> GetChildTokenAsync(RefreshTokenDto refreshToken);
     }
 }

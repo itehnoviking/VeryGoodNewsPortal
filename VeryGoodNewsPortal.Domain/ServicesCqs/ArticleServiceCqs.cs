@@ -25,14 +25,13 @@ namespace VeryGoodNewsPortal.Domain.ServicesCqs
             _mediator = mediator;
         }
 
-       
 
-        public async Task<ArticleDto> GetArticleById(Guid id)
+
+        public async Task<ArticleDto> GetArticleByIdAsync(Guid id)
         {
             try
             {
-                return await _mediator.Send(new GetArticleByIdQuery(id),
-                new CancellationToken());
+                return await _mediator.Send(new GetArticleByIdQuery(id), new CancellationToken());
             }
             catch (Exception ex)
             {
@@ -41,9 +40,40 @@ namespace VeryGoodNewsPortal.Domain.ServicesCqs
             }
         }
 
-        public async Task<IEnumerable<ArticleDto>> GetAllArticles(int? page)
+        public async Task<IEnumerable<ArticleDto>> GetAllArticlesAsync(int? page)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (page > 0 && page != null)
+                {
+                    return await GetArticlesByPageAsync(Convert.ToInt32(page));
+                }
+
+                return await _mediator.Send(new GetAllPositivityArticlesQuery(), new CancellationToken());
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex, ex.Message);
+                throw;
+            }
+
+        }
+
+        private async Task<IEnumerable<ArticleDto>> GetArticlesByPageAsync(int page)
+        {
+            try
+            {
+                var size = Convert.ToInt32(_configuration["ApplicationVariables:PageSize"]);
+
+
+                return await _mediator.Send(new GetPositivityArticlesByPageQuery(size, page), new CancellationToken());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                throw;
+            }
         }
     }
 }

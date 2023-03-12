@@ -103,6 +103,12 @@ namespace VeryGoodNewsPortal.DataAccess
             DbSet.Remove(entity);
         }
 
+        public virtual async Task RemoveRange(Expression<Func<T, bool>> predicate)
+        {
+            var entities = DbSet.Where(predicate);
+
+            DbSet.RemoveRange(entities);
+        }
 
         public virtual void Update(T entity)
         {

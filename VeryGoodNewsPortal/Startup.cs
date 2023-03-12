@@ -6,10 +6,14 @@ using Microsoft.EntityFrameworkCore;
 using VeryGoodNewsPortal.Core.Data;
 using VeryGoodNewsPortal.Core.Interfaces;
 using VeryGoodNewsPortal.Core.Interfaces.Data;
+using VeryGoodNewsPortal.Core.Interfaces.InterfacesCqs;
+using VeryGoodNewsPortal.Core.Interfaces.InterfacesWebApi;
 using VeryGoodNewsPortal.Data;
 using VeryGoodNewsPortal.Data.Entities;
 using VeryGoodNewsPortal.DataAccess;
 using VeryGoodNewsPortal.Domain.Services;
+using VeryGoodNewsPortal.Domain.ServicesCqs;
+using VeryGoodNewsPortal.Domain.ServicesWebApi;
 
 namespace VeryGoodNewsPortal
 {
@@ -54,6 +58,11 @@ namespace VeryGoodNewsPortal
             services.AddScoped<ISourceService, SourceService>();
             services.AddScoped<IRssService, RssService>();
             services.AddScoped<IHtmlParserService, HtmlParserService>();
+
+            services.AddScoped<IJwtService, JwtService>();
+            services.AddScoped<ITokenService, TokenService>();
+
+            services.AddScoped<IArticleServiceCqs, ArticleServiceCqs>();
 
             //AutoMapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

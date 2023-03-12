@@ -12,27 +12,28 @@ using VeryGoodNewsPortal.Data;
 
 namespace VeryGoodNewsPortal.Cqs.Handlers.QueryHandlers.ArticleQueryHandlers
 {
-    public class GetArticlesByPageQueryHandler : IRequestHandler<GetArticlesByPageQuery, IEnumerable<ArticleDto>>
+    public class GetAllPositivityArticlesQueryHandler : IRequestHandler<GetAllPositivityArticlesQuery, IEnumerable<ArticleDto>>
     {
-        private readonly VeryGoodNewsPortalContext _database;
         private readonly IMapper _mapper;
+        private readonly VeryGoodNewsPortalContext _database;
 
-        public GetArticlesByPageQueryHandler(VeryGoodNewsPortalContext database, IMapper mapper)
+        public GetAllPositivityArticlesQueryHandler(VeryGoodNewsPortalContext database, IMapper mapper)
         {
             _database = database;
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<ArticleDto>> Handle(GetArticlesByPageQuery query, CancellationToken token)
+        public async Task<IEnumerable<ArticleDto>> Handle(GetAllPositivityArticlesQuery request, CancellationToken token)
         {
             var articles = await _database.Articles
+                .AsNoTracking()
+                .Where(article => article.PositivityGrade > 10)
                 .OrderByDescending(article => article.CreationDate)
-                .Skip(query.PageNumber * query.PageSize)
-                .Take(query.PageSize)
                 .Select(article => _mapper.Map<ArticleDto>(article))
                 .ToArrayAsync(cancellationToken: token);
 
             return articles;
+                
         }
     }
 }

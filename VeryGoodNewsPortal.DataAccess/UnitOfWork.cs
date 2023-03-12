@@ -19,8 +19,16 @@ namespace VeryGoodNewsPortal.DataAccess
         private readonly IRepository<Source> _sourceRepository;
         private readonly IRepository<Comment> _commentRepository;
         private readonly IRepository<UserRole> _userRoleRepository;
+        private readonly IRepository<RefreshToken> _refreshTokenRepository;
 
-        public UnitOfWork(VeryGoodNewsPortalContext db, IRepository<Article> articleRepository, IRepository<Role> roleRepository, IRepository<User> userRepository, IRepository<Source> sourceRepository, IRepository<Comment> commentRepository, IRepository<UserRole> userRoleRepository)
+        public UnitOfWork(VeryGoodNewsPortalContext db, 
+            IRepository<Article> articleRepository, 
+            IRepository<Role> roleRepository, 
+            IRepository<User> userRepository, 
+            IRepository<Source> sourceRepository, 
+            IRepository<Comment> commentRepository, 
+            IRepository<UserRole> userRoleRepository, 
+            IRepository<RefreshToken> refreshTokenRepository)
         {
             _db = db;
             _articleRepository = articleRepository;
@@ -29,6 +37,7 @@ namespace VeryGoodNewsPortal.DataAccess
             _sourceRepository = sourceRepository;
             _commentRepository = commentRepository;
             _userRoleRepository = userRoleRepository;
+            _refreshTokenRepository = refreshTokenRepository;
         }
 
         public IRepository<Article> Articles => _articleRepository;
@@ -37,6 +46,7 @@ namespace VeryGoodNewsPortal.DataAccess
         public IRepository<Source> Sources => _sourceRepository;
         public IRepository<Comment> Comments => _commentRepository;
         public IRepository<UserRole> UserRoles => _userRoleRepository;
+        public IRepository<RefreshToken> RefreshTokens => _refreshTokenRepository;
 
         public async Task<int> Commit()
         {
@@ -51,6 +61,9 @@ namespace VeryGoodNewsPortal.DataAccess
             _roleRepository.Dispose();
             _sourceRepository.Dispose();
             _userRepository.Dispose();
+            _userRoleRepository.Dispose();
+            _refreshTokenRepository.Dispose();
+
             GC.SuppressFinalize(this);
         }
     }

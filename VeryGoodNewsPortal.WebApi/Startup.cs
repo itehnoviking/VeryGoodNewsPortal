@@ -1,18 +1,24 @@
 ﻿using FirstMvcApp.Domain.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using System.Text;
 using VeryGoodNewsPortal.Core.Data;
 using VeryGoodNewsPortal.Core.Interfaces;
 using VeryGoodNewsPortal.Core.Interfaces.Data;
 using VeryGoodNewsPortal.Core.Interfaces.InterfacesCqs;
+using VeryGoodNewsPortal.Core.Interfaces.InterfacesWebApi;
 using VeryGoodNewsPortal.Data;
 using VeryGoodNewsPortal.Data.Entities;
 using VeryGoodNewsPortal.DataAccess;
 using VeryGoodNewsPortal.Domain.Services;
 using VeryGoodNewsPortal.Domain.ServicesCqs;
+using VeryGoodNewsPortal.Domain.ServicesWebApi;
+using WebApiFirstMvcApp.Middleware;
 
 namespace VeryGoodNewsPortal.WebApi
 {
@@ -44,6 +50,7 @@ namespace VeryGoodNewsPortal.WebApi
             services.AddScoped<IRepository<User>, UserRepository>();
             services.AddScoped<IRepository<Source>, SourceRepository>();
             services.AddScoped<IRepository<UserRole>, UserRoleRepository>();
+            services.AddScoped<IRepository<RefreshToken>, RefreshTokenRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -54,6 +61,9 @@ namespace VeryGoodNewsPortal.WebApi
             services.AddScoped<ISourceService, SourceService>();
             services.AddScoped<IRssService, RssService>();
             services.AddScoped<IHtmlParserService, HtmlParserService>();
+
+            services.AddScoped<IJwtService, JwtService>();
+            services.AddScoped<ITokenService, TokenService>();
 
             services.AddScoped<IArticleServiceCqs, ArticleServiceCqs>();
 
@@ -77,25 +87,25 @@ namespace VeryGoodNewsPortal.WebApi
             //// Add the processing server as IHostedService
             //services.AddHangfireServer();
 
-            //services.AddAuthentication(options =>
-            //{
-            //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            //})
-            //    .AddJwtBearer(options =>
-            //    {
-            //        options.SaveToken = true;
-            //        options.RequireHttpsMetadata = true;
-            //        options.TokenValidationParameters = new TokenValidationParameters()
-            //        {
-            //            ValidateIssuerSigningKey = true,
-            //            ValidateIssuer = false,
-            //            ValidateAudience = false,
-            //            ClockSkew = TimeSpan.Zero,
-            //            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["AppSettings:Secret"]))
-            //        };
-            //    });
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(options =>
+                {
+                    options.SaveToken = true;
+                    options.RequireHttpsMetadata = true;
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuerSigningKey = true,
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ClockSkew = TimeSpan.Zero,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["AppSettings:Secret"]))
+                    };
+                });
 
             Assembly.Load("VeryGoodNewsPortal.Cqs");
             services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
@@ -104,7 +114,7 @@ namespace VeryGoodNewsPortal.WebApi
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApiFirstMvcApp", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "VeryGoodNewsPortal.WebApi", Version = "v1" });
             });
         }
 
@@ -114,7 +124,7 @@ namespace VeryGoodNewsPortal.WebApi
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApiFirstMvcApp v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "VeryGoodNewsPortal.WebApi v1"));
             }
 
             //app.UseDeveloperExceptionPage();
@@ -126,7 +136,7 @@ namespace VeryGoodNewsPortal.WebApi
             app.UseAuthentication();
             app.UseAuthorization();
 
-            //app.UseMiddleware<JwtMiddleware>();
+            app.UseMiddleware<JwtMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

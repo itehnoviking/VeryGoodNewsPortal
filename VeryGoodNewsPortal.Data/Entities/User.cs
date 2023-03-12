@@ -16,5 +16,6 @@ namespace VeryGoodNewsPortal.Data.Entities
 
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
+        public virtual IEnumerable<RefreshToken> RefreshTokens { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VeryGoodNewsPortal.Data;
 
@@ -11,9 +12,11 @@ using VeryGoodNewsPortal.Data;
 namespace VeryGoodNewsPortal.Data.Migrations
 {
     [DbContext(typeof(VeryGoodNewsPortalContext))]
-    partial class VeryGoodNewsPortalContextModelSnapshot : ModelSnapshot
+    [Migration("20230311161542_AddRefreshTokenEntity")]
+    partial class AddRefreshTokenEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

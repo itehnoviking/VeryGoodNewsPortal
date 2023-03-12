@@ -58,7 +58,7 @@ namespace VeryGoodNewsPortal.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(AccountLoginModel model)
         {
-            if (await _accountService.CheckPassword(model.Email, model.Password))
+            if (await _accountService.CheckPasswordAsync(model.Email, model.Password))
             {
                 var userId = (await _accountService.GetUserIdByEmailAsync(model.Email)).GetValueOrDefault();
 

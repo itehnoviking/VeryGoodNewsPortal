@@ -29,6 +29,8 @@ namespace VeryGoodNewsPortal.Core.Data
         //Delete
         void Remove(T entity);
 
+        Task RemoveRange(Expression<Func<T, bool>> predicate);
+
         public Task Dispose();
     }
 }
