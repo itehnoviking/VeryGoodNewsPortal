@@ -173,7 +173,18 @@ namespace VeryGoodNewsPortal.Domain.ServicesWebApi
         private async Task RemoveOldRefreshTokens(UserDto userDto)
         {
 
-            await _unitOfWork.RefreshTokens.RemoveRange(token => !token.IsActive && token.UserId.Equals(userDto.Id));
+            //await _unitOfWork.RefreshTokens.RemoveRange(token => token.UserId.Equals(userDto.Id) && !token.IsActive);
+
+            var tokenList = await (await _unitOfWork.RefreshTokens.FindBy(token => token.UserId.Equals(userDto.Id))).ToListAsync();
+
+            foreach (var token in tokenList)
+            {
+                if (!token.IsActive)
+                {
+                    _unitOfWork.RefreshTokens.Remove(token);
+                }
+            }
+
             await _unitOfWork.Commit();
         }
     }

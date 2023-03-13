@@ -19,9 +19,10 @@ namespace VeryGoodNewsPortal.WebApi.Controllers
         private readonly IMapper _mapper;
         private readonly IAccountServiceCqs _accountServiceCqs;
 
-        public AccountController(IMapper mapper, 
-            ITokenService tokenService, 
-            ILogger<AccountController> logger, IAccountServiceCqs accountServiceCqs)
+        public AccountController(IMapper mapper,
+            ITokenService tokenService,
+            ILogger<AccountController> logger,
+            IAccountServiceCqs accountServiceCqs)
         {
             _mapper = mapper;
             _tokenService = tokenService;
@@ -29,17 +30,25 @@ namespace VeryGoodNewsPortal.WebApi.Controllers
             _accountServiceCqs = accountServiceCqs;
         }
 
-        [HttpPost("auth"), AllowAnonymous]
-        public async Task<IActionResult> Authenticate([FromBody]AuthenticateRequest request)
+        [HttpPost("auth")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(AuthenticateResponse), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Authenticate([FromBody] AuthenticateRequest request)
         {
             try
             {
+                if (request == null || !ModelState.IsValid)
+                {
+                    return BadRequest(new ResponseMessage { Message = "Request is null or invalid" });
+                }
+
                 var dto = _mapper.Map<LoginDto>(request);
                 var response = await _tokenService.GetTokenAsync(dto, GetIpAddress());
 
                 if (response == null)
                 {
-                    return BadRequest(new { message = "Username or password is incorrect" });
+                    return BadRequest(new ResponseMessage { Message = "Username or password is incorrect" });
                 }
 
 
@@ -49,12 +58,15 @@ namespace VeryGoodNewsPortal.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                throw;
+                _logger.LogError(ex, ex.Message);
+                return BadRequest(new ResponseMessage { Message = ex.Message });
             }
         }
 
-        [HttpPost("refresh-token"), AllowAnonymous]
+        [HttpPost("refresh-token")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(AuthenticateResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> RefreshToken()
         {
             try
@@ -74,12 +86,15 @@ namespace VeryGoodNewsPortal.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                throw;
+                _logger.LogError(ex, ex.Message);
+                return BadRequest(new ResponseMessage { Message = ex.Message });
             }
         }
 
         [HttpPost("revoke-token")]
+        [Authorize]
+        [ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> RevokeToken(RevokeTokenRequest request)
         {
             try
@@ -88,18 +103,17 @@ namespace VeryGoodNewsPortal.WebApi.Controllers
 
                 if (string.IsNullOrEmpty(token))
                 {
-                    return BadRequest(new { message = "Token is required" });
+                    return BadRequest(new ResponseMessage() { Message = "Token is required" });
                 }
-
-                //var response = _tokenService.RevokeToken(token, GetIpAddress());
+                
                 await _tokenService.RevokeTokenAsync(token, GetIpAddress());
 
-                return Ok(new { message = "Token is revoked" });
+                return Ok(new ResponseMessage { Message = "Token is revoked" });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                throw;
+                _logger.LogError(ex, ex.Message);
+                return BadRequest(new ResponseMessage { Message = ex.Message });
             }
         }
 

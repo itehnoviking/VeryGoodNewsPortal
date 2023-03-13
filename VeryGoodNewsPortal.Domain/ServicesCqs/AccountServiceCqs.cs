@@ -66,7 +66,7 @@ namespace VeryGoodNewsPortal.Domain.ServicesCqs
                 {
                     var enteredPasswordHash = GetPasswordHash(password, _configuration["ApplicationVariables:Salt"]);
 
-                    if (user.PasswordHash.Equals(enteredPasswordHash))
+                    if (enteredPasswordHash.Equals($@"{user.PasswordHash}"))
                     {
                         return true;
                     }
