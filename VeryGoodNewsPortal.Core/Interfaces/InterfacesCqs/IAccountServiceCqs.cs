@@ -12,5 +12,7 @@ namespace VeryGoodNewsPortal.Core.Interfaces.InterfacesCqs
         Task<UserDto> GetUserByRefreshTokenAsync(string token);
         Task<UserDto> GetUserByEmailAsync(string email);
         Task<bool> CheckPasswordByEmailAsync(string email, string password);
+        Task<bool> CreateUserAsync(RegisterDto dto, string roleName);
+        Task<bool> ChangePasswordAsync(string email, string oldPassword, string newPassword);
     }
 }

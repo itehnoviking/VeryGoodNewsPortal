@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using VeryGoodNewsPortal.Core.DTOs;
 using VeryGoodNewsPortal.Core.Interfaces.InterfacesCqs;
+using VeryGoodNewsPortal.Cqs.Models.Commands.AccountCommands;
 using VeryGoodNewsPortal.Cqs.Models.Queries.AccountQueries;
 
 namespace VeryGoodNewsPortal.Domain.ServicesCqs
@@ -81,6 +82,48 @@ namespace VeryGoodNewsPortal.Domain.ServicesCqs
             }
         }
 
+        public async Task<bool> CreateUserAsync (RegisterDto dto, string roleName)
+        {
+            //todo added validation dto
+
+            var passwordHash = GetPasswordHash(dto.Password, _configuration["ApplicationVariables:Salt"]);
+            var normalizedEmail = dto.Email.ToUpperInvariant();
+
+            var command = new RegisterUserCommand(dto.Email, normalizedEmail, dto.Name, passwordHash);
+
+            await _mediator.Send(command, new CancellationToken());
+
+            return await SetRoleUserAsync(command.Id, roleName);
+        }
+
+        public async Task<bool> ChangePasswordAsync(string email, string oldPassword, string newPassword)
+        {
+            try
+            {
+                if (!await CheckPasswordByEmailAsync(email, oldPassword))
+                {
+                    throw new ArgumentException("Incorrect email or current password");
+                }
+
+                var user = await GetUserByEmailAsync(email);
+
+                if (user == null)
+                {
+                    throw new ArgumentException("User not found");
+                }
+
+                var newPasswordHash = GetPasswordHash(newPassword, _configuration["ApplicationVariables:Salt"]);
+                var command = new ChangePasswordCommand(user.Id, newPasswordHash);
+
+                return await _mediator.Send(command, new CancellationToken());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                throw;
+            }
+        }
+
         private string GetPasswordHash(string password, string salt)
         {
             try
@@ -98,6 +141,30 @@ namespace VeryGoodNewsPortal.Domain.ServicesCqs
                 throw;
             }
         }
+
+        private async Task<bool> SetRoleUserAsync(Guid userId, string roleName)
+        {
+            try
+            {
+                var roleId = await _mediator.Send(new GetRoleIdByNameQuery(roleName),
+                    new CancellationToken());
+
+                var command = new CreateUserRoleCommand()
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userId,
+                    RoleId = roleId
+                };
+                return await _mediator.Send(command, new CancellationToken());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                throw;
+            }
+        }
+
+        
     }
 
     

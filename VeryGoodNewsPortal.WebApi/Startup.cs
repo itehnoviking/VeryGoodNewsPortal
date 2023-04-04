@@ -112,6 +112,15 @@ namespace VeryGoodNewsPortal.WebApi
             Assembly.Load("VeryGoodNewsPortal.Cqs");
             services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "EnableAll",
+                    policy =>
+                    {
+                        policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+                    });
+            });
+
             services.AddControllers();
 
             services.AddSwaggerGen(c =>
@@ -139,6 +148,8 @@ namespace VeryGoodNewsPortal.WebApi
             app.UseAuthorization();
 
             app.UseMiddleware<JwtMiddleware>();
+
+            app.UseCors("EnableAll");
 
             app.UseEndpoints(endpoints =>
             {

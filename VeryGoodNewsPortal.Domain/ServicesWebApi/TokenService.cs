@@ -1,14 +1,9 @@
 ﻿using AutoMapper;
 using FirstMvcApp.Data;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MediatR;
 using VeryGoodNewsPortal.Core.DTOs;
 using VeryGoodNewsPortal.Core.Interfaces;
 using VeryGoodNewsPortal.Core.Interfaces.Data;
@@ -22,7 +17,6 @@ namespace VeryGoodNewsPortal.Domain.ServicesWebApi
     {
         private readonly IConfiguration _configuration;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IAccountService _accountService;
         private readonly ILogger<TokenService> _logger;
         private readonly IJwtService _jwtService;
         private readonly IMapper _mapper;
@@ -31,15 +25,13 @@ namespace VeryGoodNewsPortal.Domain.ServicesWebApi
 
         public TokenService(IConfiguration configuration,
             IUnitOfWork unitOfWork,
-            IAccountService accountService,
             ILogger<TokenService> logger,
             IJwtService jwtService,
             IMapper mapper,
-            IAccountServiceCqs accountServiceCqs, IMediator mediator, ITokenServiceCqs tokenServiceCqs)
+            IAccountServiceCqs accountServiceCqs, ITokenServiceCqs tokenServiceCqs)
         {
             _configuration = configuration;
             _unitOfWork = unitOfWork;
-            _accountService = accountService;
             _logger = logger;
             _jwtService = jwtService;
             _mapper = mapper;

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using VeryGoodNewsPortal.Core.DTOs;
@@ -40,10 +41,16 @@ namespace VeryGoodNewsPortal.Domain.ServicesCqs
             }
         }
 
-        public async Task<IEnumerable<ArticleDto>> GetAllArticlesAsync(int? page)
+        public async Task<IEnumerable<ArticleDto>> GetAllArticlesByPageAndRoleAsync(int? page, string role)
         {
             try
             {
+                //todo add role validation logic!
+                if (role.Equals("Admin"))
+                {
+                    return await GetAllArticlesAsync();
+                }
+
                 if (page > 0 && page != null)
                 {
                     return await GetArticlesByPageAsync(Convert.ToInt32(page));
@@ -58,6 +65,20 @@ namespace VeryGoodNewsPortal.Domain.ServicesCqs
                 throw;
             }
 
+        }
+
+        private async Task<IEnumerable<ArticleDto>> GetAllArticlesAsync()
+        {
+            try
+            {
+                return await _mediator.Send(new GetAllArticlesQuery(), new CancellationToken());
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex, ex.Message);
+                throw;
+            }
         }
 
         private async Task<IEnumerable<ArticleDto>> GetArticlesByPageAsync(int page)

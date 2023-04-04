@@ -117,6 +117,63 @@ namespace VeryGoodNewsPortal.WebApi.Controllers
             }
         }
 
+        [HttpPost("register"), AllowAnonymous]
+        [ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(RegisterResponse), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        {
+            try
+            {
+                if (request == null || !ModelState.IsValid)
+                {
+                    return BadRequest(new ResponseMessage { Message = "Request is invalid or null!" });
+                }
+
+                var registerDto = _mapper.Map<RegisterDto>(request);
+
+                var response = await _accountServiceCqs.CreateUserAsync(registerDto, request.Role);
+
+
+                if (response == true)
+                {
+                    return Ok(new ResponseMessage { Message = "Registration completed!" });
+                }
+
+                else
+                {
+                    return BadRequest(new ResponseMessage { Message = "Logic app is wrong work" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return BadRequest(new ResponseMessage { Message = ex.Message });
+            }
+        }
+
+        [HttpPut("change-password"), Authorize]
+        [ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid || request == null)
+                {
+                    return BadRequest(new ResponseMessage { Message = "Request is invalid or null!" });
+                }
+
+                var response = await _accountServiceCqs.ChangePasswordAsync(request.Email, request.OldPassword,request.NewPassword);
+
+                return Ok(new ResponseMessage { Message = "Password successfully changed!" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return BadRequest(new ResponseMessage { Message = ex.Message });
+            }
+        }
+
         private string GetIpAddress()
         {
             if (Request.Headers.ContainsKey("X-forwarded-For"))
