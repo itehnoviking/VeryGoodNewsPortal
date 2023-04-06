@@ -18,4 +18,9 @@
     <ProjectReference Include="..\VeryGoodNewsPortal.Core\VeryGoodNewsPortal.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Handlers\CommandHandlers\CommentHandlers\" />
+    <Folder Include="Models\Commands\CommentCommand\" />
+  </ItemGroup>
+
 </Project>
