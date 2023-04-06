@@ -18,12 +18,17 @@ namespace VeryGoodNewsPortal.Domain.ServicesCqs
         private readonly ILogger<ArticleServiceCqs> _logger;
         private readonly IConfiguration _configuration;
         private readonly IMediator _mediator;
+        private readonly IRoleServiceCqs _roleServiceCqs;
+        private readonly int _size;
 
-        public ArticleServiceCqs(ILogger<ArticleServiceCqs> logger, IConfiguration configuration, IMediator mediator)
+        public ArticleServiceCqs(ILogger<ArticleServiceCqs> logger, IConfiguration configuration, IMediator mediator, IRoleServiceCqs roleServiceCqs)
         {
             _logger = logger;
             _configuration = configuration;
             _mediator = mediator;
+            _roleServiceCqs = roleServiceCqs;
+
+            _size = Convert.ToInt32(_configuration["ApplicationVariables:PageSize"]);
         }
 
 
@@ -41,19 +46,21 @@ namespace VeryGoodNewsPortal.Domain.ServicesCqs
             }
         }
 
-        public async Task<IEnumerable<ArticleDto>> GetAllArticlesByPageAndRoleAsync(int? page, string role)
+        public async Task<IEnumerable<ArticleDto>> GetAllArticlesByPageAndRoleAsync(int? page, string userId)
         {
             try
             {
+
                 //todo add role validation logic!
-                if (role.Equals("Admin"))
+
+                if (await _roleServiceCqs.IsAdminByIdUser(userId))
                 {
-                    return await GetAllArticlesAsync();
+                    return await _mediator.Send(new GetAllArticlesByPageQuery(_size, Convert.ToInt32(page)), new CancellationToken());
                 }
 
                 if (page > 0 && page != null)
                 {
-                    return await GetArticlesByPageAsync(Convert.ToInt32(page));
+                    return await _mediator.Send(new GetPositivityArticlesByPageQuery(_size, Convert.ToInt32(page)), new CancellationToken());
                 }
 
                 return await _mediator.Send(new GetAllPositivityArticlesQuery(), new CancellationToken());
@@ -65,36 +72,6 @@ namespace VeryGoodNewsPortal.Domain.ServicesCqs
                 throw;
             }
 
-        }
-
-        private async Task<IEnumerable<ArticleDto>> GetAllArticlesAsync()
-        {
-            try
-            {
-                return await _mediator.Send(new GetAllArticlesQuery(), new CancellationToken());
-            }
-            catch (Exception ex)
-            {
-
-                _logger.LogError(ex, ex.Message);
-                throw;
-            }
-        }
-
-        private async Task<IEnumerable<ArticleDto>> GetArticlesByPageAsync(int page)
-        {
-            try
-            {
-                var size = Convert.ToInt32(_configuration["ApplicationVariables:PageSize"]);
-
-
-                return await _mediator.Send(new GetPositivityArticlesByPageQuery(size, page), new CancellationToken());
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                throw;
-            }
         }
     }
 }

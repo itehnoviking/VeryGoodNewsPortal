@@ -10,6 +10,6 @@ namespace VeryGoodNewsPortal.Core.Interfaces.InterfacesCqs
     public interface IArticleServiceCqs
     {
         Task<ArticleDto> GetArticleByIdAsync(Guid id);
-        Task<IEnumerable<ArticleDto>> GetAllArticlesByPageAndRoleAsync(int? page, string role);
+        Task<IEnumerable<ArticleDto>> GetAllArticlesByPageAndRoleAsync(int? page, string userId);
     }
 }

@@ -60,9 +60,9 @@ namespace VeryGoodNewsPortal.WebApi.Controllers
         {
             try
             {
-                var role = User.Claims.FirstOrDefault()?.Value;
+                var userId = User.Claims.FirstOrDefault().Value;
 
-                var articles = await _articleServiceCqs.GetAllArticlesByPageAndRoleAsync(page, role);
+                var articles = await _articleServiceCqs.GetAllArticlesByPageAndRoleAsync(page, userId);
 
                 if (articles == null || !articles.Any())
                 {

@@ -68,6 +68,7 @@ namespace VeryGoodNewsPortal.WebApi
             services.AddScoped<IArticleServiceCqs, ArticleServiceCqs>();
             services.AddScoped<IAccountServiceCqs, AccountServiceCqs>();
             services.AddScoped<ITokenServiceCqs, TokenServiceCqs>();
+            services.AddScoped<IRoleServiceCqs, RoleServiceCqs>();
 
             //AutoMapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
