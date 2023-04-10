@@ -28,6 +28,7 @@ namespace VeryGoodNewsPortal.Cqs.Handlers.QueryHandlers.ArticleQueryHandlers
             var article = await _database.Articles
                 .AsNoTracking()
                 .Where(article => article.Id.Equals(request.Id))
+                .Include(article => article.Comments)
                 .FirstOrDefaultAsync(cancellationToken:token);
 
             return _mapper.Map<ArticleDto>(article);

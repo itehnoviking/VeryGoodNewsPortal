@@ -12,6 +12,7 @@ namespace VeryGoodNewsPortal.WebApi.Mappers
         {
 
             CreateMap<Article, ArticleDto>();
+            CreateMap<Comment, CommentDto>();
 
         }
     }

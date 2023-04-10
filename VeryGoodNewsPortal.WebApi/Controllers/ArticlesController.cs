@@ -22,7 +22,7 @@ namespace VeryGoodNewsPortal.WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize]
+        //[Authorize]
         [ProducesResponseType(typeof(ArticleDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ResponseErrorMessage), 500)]
         [ProducesResponseType(typeof(ResponseErrorMessage), (int)HttpStatusCode.BadRequest)]

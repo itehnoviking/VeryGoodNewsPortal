@@ -21,7 +21,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, b
     {
         var user = _mapper.Map<User>(command);
 
-        await _database.Users.AddAsync(user);
+        await _database.Users.AddAsync(user, token);
         await _database.SaveChangesAsync(cancellationToken: token);
 
         return true;

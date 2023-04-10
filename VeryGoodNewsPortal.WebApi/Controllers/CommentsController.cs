@@ -48,6 +48,30 @@ public class CommentsController : ControllerBase
         }
     }
 
+    [HttpDelete("{id}")]
+    //[Authorize(Roles = "Admin, Moderator")]
+    [ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.InternalServerError)]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        try
+        {
+            if (id == Guid.Empty)
+            {
+                return BadRequest(new ResponseMessage { Message = "Identificator is null" });
+            }
+
+            await _commentServiceCQS.DeleteAsync(id);
+            return Ok(new ResponseMessage { Message = "Comment deleted!" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return StatusCode(500, new ResponseMessage { Message = ex.Message });
+        }
+    }
+
     //[HttpPut("{id}")]
     //[Authorize]
     //[ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.OK)]
@@ -79,27 +103,5 @@ public class CommentsController : ControllerBase
     //    }
     //}
 
-    //[HttpDelete("{id}")]
-    //[Authorize(Roles = "Admin, Moderator")]
-    //[ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.OK)]
-    //[ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.BadRequest)]
-    //[ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.InternalServerError)]
-    //public async Task<IActionResult> Delete(Guid id)
-    //{
-    //    try
-    //    {
-    //        if (id == Guid.Empty)
-    //        {
-    //            return BadRequest(new ResponseMessage { Message = "Identificator is null" });
-    //        }
 
-    //        await _commentServiceCQS.DeleteAsync(id);
-    //        return Ok(new ResponseMessage { Message = "Comment deleted!" });
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        _logger.LogError(ex, ex.Message);
-    //        return StatusCode(500, new ResponseMessage { Message = ex.Message });
-    //    }
-    //}
 }

@@ -20,6 +20,6 @@ namespace VeryGoodNewsPortal.Core.DTOs
 
         public Guid SourceId { get; set; }
 
-        public IEnumerable<CommentDto> CommentDtos { get; set; }
+        public ICollection<CommentDto> Comments { get; set; }
     }
 }

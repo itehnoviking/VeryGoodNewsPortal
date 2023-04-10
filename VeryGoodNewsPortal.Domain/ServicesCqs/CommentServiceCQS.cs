@@ -36,6 +36,19 @@ public class CommentServiceCQS : ICommentServiceCQS
         }
     }
 
+    public async Task DeleteAsync(Guid id)
+    {
+        try
+        {
+            await _mediator.Send(new DeleteCommentCommand(id), new CancellationToken());
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            throw;
+        }
+    }
+
     public Task<object> GetByIdAsync(Guid id)
     {
         throw new NotImplementedException();
@@ -46,8 +59,5 @@ public class CommentServiceCQS : ICommentServiceCQS
         throw new NotImplementedException();
     }
 
-    public Task DeleteAsync(Guid id)
-    {
-        throw new NotImplementedException();
-    }
+    
 }

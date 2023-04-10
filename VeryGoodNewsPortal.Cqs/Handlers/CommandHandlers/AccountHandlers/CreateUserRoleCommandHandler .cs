@@ -22,7 +22,7 @@ public class CreateUserRoleCommandHandler : IRequestHandler<CreateUserRoleComman
     {
         var userRole = _mapper.Map<UserRole>(command);
 
-        await _database.UserRoles.AddAsync(userRole);
+        await _database.UserRoles.AddAsync(userRole, token);
 
         await _database.SaveChangesAsync(cancellationToken: token);
 
