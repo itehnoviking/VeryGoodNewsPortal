@@ -19,8 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Handlers\CommandHandlers\CommentHandlers\" />
+    <Folder Include="Handlers\QueryHandlers\CommentQueryHandlers\" />
     <Folder Include="Models\Commands\CommentCommand\" />
+    <Folder Include="Models\Queries\CommentQueries\" />
   </ItemGroup>
 
 </Project>

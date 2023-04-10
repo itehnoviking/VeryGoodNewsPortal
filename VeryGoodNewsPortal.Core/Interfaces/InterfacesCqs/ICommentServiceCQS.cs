@@ -5,8 +5,8 @@ namespace VeryGoodNewsPortal.Core.Interfaces.InterfacesCqs;
 public interface ICommentServiceCQS
 {
     Task CreateAsync(CreateCommentDto dto);
-    Task<object> GetByIdAsync(Guid id);
-    Task EditAsync(object obj);
+    Task<CommentDto> GetByIdAsync(Guid id);
+    Task EditAsync(CommentDto dto);
     Task DeleteAsync(Guid id);
 
 }

@@ -25,7 +25,7 @@ public class CommentsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize]
+    //[Authorize]
     [ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.InternalServerError)]
@@ -49,7 +49,7 @@ public class CommentsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    //[Authorize(Roles = "Admin, Moderator")]
+    //[Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.InternalServerError)]
@@ -72,36 +72,38 @@ public class CommentsController : ControllerBase
         }
     }
 
-    //[HttpPut("{id}")]
-    //[Authorize]
-    //[ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.OK)]
-    //[ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.BadRequest)]
-    //[ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.InternalServerError)]
-    //public async Task<IActionResult> Edit(Guid id, [FromBody] EditCommentRequest request)
-    //{
-    //    try
-    //    {
-    //        if (!ModelState.IsValid || request == null)
-    //        {
-    //            return BadRequest(new ResponseMessage { Message = "Request is null or invalid" });
-    //        }
-    //        var comment = await _commentServiceCQS.GetByIdAsync(id);
-    //        if (comment == null)
-    //        {
-    //            return BadRequest(new ResponseMessage { Message = $"Comment with id {id} not found" });
-    //        }
+    [HttpPut("{id}")]
+    //[Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ResponseMessage), (int)HttpStatusCode.InternalServerError)]
+    public async Task<IActionResult> Edit(Guid id, [FromBody] TextEditCommentRequest request)
+    {
+        try
+        {
+            if (!ModelState.IsValid || request == null)
+            {
+                return BadRequest(new ResponseMessage { Message = "Request is null or invalid" });
+            }
+            var comment = await _commentServiceCQS.GetByIdAsync(id);
 
-    //        comment.Text = request.Text;
+            if (comment == null)
+            {
+                return BadRequest(new ResponseMessage { Message = $"Comment not found" });
+            }
 
-    //        await _commentServiceCQS.EditAsync(comment);
-    //        return Ok(new ResponseMessage { Message = "Comment changed!" });
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        _logger.LogError(ex, ex.Message);
-    //        return BadRequest(new ResponseMessage { Message = ex.Message });
-    //    }
-    //}
+            comment.Text = request.Text;
+
+            await _commentServiceCQS.EditAsync(comment);
+
+            return Ok(new ResponseMessage { Message = "Comment changed" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return BadRequest(new ResponseMessage { Message = ex.Message });
+        }
+    }
 
 
 }

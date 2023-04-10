@@ -18,5 +18,10 @@ public class CommentProfile : Profile
             .ForMember(dto => dto.CreationDate, opt => opt.MapFrom(date => DateTime.Now));
 
         CreateMap<CreateCommentCommand, Comment>();
+
+        CreateMap<CommentDto, Comment>().ReverseMap();
+
+        CreateMap<CommentDto, EditCommentCommand>().ReverseMap();
+        CreateMap<Comment, EditCommentCommand>().ReverseMap();
     }
 }
